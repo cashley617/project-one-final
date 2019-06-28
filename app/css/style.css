@@ -1,8 +1,4 @@
 
-/* .card-img-top {
-    width: 20%;
-} */
-
 body {
     font-family: 'Roboto', sans-serif;
 }
@@ -10,10 +6,16 @@ body {
 .card {
     width: 20%;
     border: none;
+    margin: 30px;
 }
 
 .navbar {
     height: 45px;
+}
+
+.text {
+    width: 100%;
+    background-color: white;
 }
 
 
