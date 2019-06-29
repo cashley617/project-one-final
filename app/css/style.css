@@ -90,7 +90,7 @@ p {
 }
 
 .nav-selected::before {
-    content: '|';
+    content: '';
     width: 5px;
     height: 100%;
     margin-right: 5px;
@@ -117,6 +117,12 @@ p {
     padding-left: 5px;
 }
 
+.app-nav-box:hover {
+    background-color: #353d43;
+    cursor: pointer;
+    color: var(--c-white-light);
+}
+
 
 /* --- Input Form --- */
 .input-form-search {
@@ -133,12 +139,20 @@ p {
 
 
 
-
 .card {
-    width: 20%;
-    border: none;
-    margin: 30px;
+    width: 170px;
+    margin: 0 15px 15px 15px;
+    border: 1px solid #353d43;
 }
+
+.card-body {
+    padding: 0 3px 0 3px;
+    background-color: #40464b;
+    color: var(--c-white-light);
+    font-size: 14px;
+    font-weight: 300;
+}
+
 
 .navbar {
     height: 45px;
