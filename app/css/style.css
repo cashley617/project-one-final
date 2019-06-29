@@ -1,7 +1,62 @@
+/* Main Site Styles */
 
-body {
+
+/* --- Global Styles --- */
+
+* {
+    box-sizing: border-box;
+}
+
+body, html {
     font-family: 'Roboto', sans-serif;
 }
+
+
+/* --- Wrapper --- */
+.app-wrapper {
+    background-color: #4d5358;
+    padding: 0px;
+    overflow: hidden;
+    min-width: 475px;
+}
+
+
+/* --- Containers --- */
+.app-letterbox-top {
+    width: 100%;
+    background-color: #353d43;
+    height: 35px;
+}
+
+.container-form {
+    font-family: 'Robot', sans-serif;
+    height: 45px;
+    width: 250px;
+    border: 1px solid #3d4145;
+    border-radius: 50px;
+    padding: 5px;
+    background-color: #40464b;
+}
+
+.container-form .fa-search {
+    font-size: 20px;
+}
+
+/* --- Input Form --- */
+.input-form-search {
+    font-family: 'Robot', sans-serif;
+    color: #ecf0f1;
+    border: none;
+    padding: 5px;
+    background-color: transparent;
+}
+.input-form-search:focus {
+    outline: none;
+}
+
+
+
+
 
 .card {
     width: 20%;
