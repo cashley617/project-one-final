@@ -1,0 +1,26 @@
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.card {
+    width: 20%;
+    border: none;
+    margin: 30px;
+}
+
+.navbar {
+    height: 45px;
+}
+
+.text {
+    width: 100%;
+    background-color: white;
+}
+
+
+
+
+
+
+
