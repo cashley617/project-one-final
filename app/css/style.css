@@ -47,11 +47,7 @@ p {
     min-height: 100%;
 }
 
-/* Box Styings */
-
-.box {
-    background-color: var(--c-box);
-}
+/* Debug Styings */
 
 /* --- Containers --- */
 
@@ -181,6 +177,10 @@ p {
 .app-profile-icon-box img:hover {
     border: 5px solid var(--c-green);
     cursor: pointer;
+}
+
+.app-profile-icon-selected {
+    border: 5px solid var(--c-green) !important;
 }
 
 .app-stage-logo {

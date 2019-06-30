@@ -1,6 +1,6 @@
 /// --- Core App Functions --- ///
 
-
+// TEMPORARY AJAX REFERENCE
 function call_data() {
     $.ajax({
         url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get%3Anew7-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=all&st=adv&ob=Relevance&p=1&sa=and",
@@ -25,21 +25,56 @@ function app_initialize() {
     // If no profile found
     if (profileCheck === null) {
 
-        // Animate Main Profile
-        $('#app-stage-profile').fadeIn('slow');
+        //  Profile Name: Create suibmit input listener
+        $('#btn-submit-profile').on('click', function () {
+            app_profile_submit_name();
+        });
 
+        // Profile Icon: Create submit button listener
+        $('#btn-submit-profile-icon').on('click', function () {
+            app_profile_submit_icon();
+        });
+
+        // Profile Icons: Create select icon listener
+        $('#app-stage-profile-icon img').on('click', function () {
+            
+            // Unselect other icons
+            $('#app-stage-profile-icon img').each(function() {
+                $(this).removeClass('app-profile-icon-selected');
+            });
+
+            // Select clicked icon
+            $(this).addClass('app-profile-icon-selected');
+
+            // Update selected value
+            appData.tempProfileSelected = $(this).attr('data-id');
+        });
+
+
+        // Profile Name: Form render. Start of profile creation staging.
+        $('#app-stage-profile').fadeIn('slow');
     }
- 
+
     // Profile Found. Load Data
     else {
-        appData.profileID   = localStorage.getItem('app-favflix-profile-id');
+
+        // Local Storage: Load Data
+        appData.profileID = localStorage.getItem('app-favflix-profile-id');
         appData.profileName = localStorage.getItem('app-favflix-profile-name');
         appData.profileIcon = localStorage.getItem('app-favflix-profile-icon');
+
+        // Welcome Name: Update dom
+        app_render_welcome_name();
+
+        // Staging Logo: Hide from dom
+        $('#app-stage-logo').remove();
+        $('#app-stage-content').fadeIn('fast');
     }
 }
 
-function app_profile_submit_name() {
 
+// Profile Name: Validate input, store and update profile name.
+function app_profile_submit_name() {
 
     // Validate w/ early exit
     let inputValue = $('#input-field-profile-name').val();
@@ -55,14 +90,15 @@ function app_profile_submit_name() {
 
         // Save profile profile name and generate unique ID
         appData.profileName = inputValue;
-        appData.profileID   = new Date().valueOf();
+        appData.profileID = new Date().valueOf();
 
         // Save to local storage
-        localStorage.setItem('app-favflix-profile-id', appData.profileID);
-        localStorage.setItem('app-favflix-profile-name', appData.profileName);
+        localStorage.setItem(appData.appPrefix + 'profile-id', appData.profileID);
+        localStorage.setItem(appData.appPrefix + 'profile-name', appData.profileName);
+        localStorage.setItem(appData.appPrefix + 'profile-icon', appData.profileIcon);
 
         // Update profile name display
-        $('#app-welcome-name').text(appData.profileName);
+        app_render_welcome_name();
 
         // Fade out and trigger next stage
         $('#app-stage-profile').fadeOut('fast', function () {
@@ -72,12 +108,43 @@ function app_profile_submit_name() {
     }
 }
 
+
+// Player Icon: Submit change
 function app_profile_submit_icon() {
 
-    // Fade out and trigger next stage
+    appData.profileIcon = appData.tempProfileSelected;
+    localStorage.setItem(appData.appPrefix + 'profile-icon', appData.profileIcon);
+    app_render_profile_icon();
 
+    // Fade out and trigger next stage
     $('#app-stage-logo').fadeOut('fast');
     $('#app-stage-profile-icon').fadeOut('fast', function () {
         $('#app-stage-content').fadeIn('fast');
     });
+}
+
+
+// ------ Render Utilities ------ //
+
+
+// Render: Update welcome name
+function app_render_welcome_name() {
+    $('#app-welcome-name').text(appData.profileName);
+}
+
+// Render: Update welcome profile icon
+function app_render_profile_icon() {
+    $('#app-welcome-img').attr('src', 'app/imgs/profile_icons/' + appData.iconLibrary[appData.profileIcon]);
+}
+
+
+// ---- DEBUG ---- //
+function app_debug_clear_data() {
+
+    event.preventDefault();
+    localStorage.removeItem(appData.appPrefix + 'profile-id')
+    localStorage.removeItem(appData.appPrefix + 'profile-name');
+    localStorage.removeItem(appData.appPrefix + 'profile-icon');
+
+    location.reload();
 }

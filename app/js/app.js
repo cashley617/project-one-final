@@ -4,13 +4,16 @@
 // App Data Object
 const appData = {
 
+    // Temporary data storage for profile creation
+    tempProfileSelected: 0,
+    
+    // Data storage app identifier prefix
+    appPrefix: 'app-favflix-',
+
     // Local Profile Info
     profileID: 0,
     profileName: 'Visitor',
     profileIcon: '0',
-
-    
-    // Data
 
     // Movie Item Librares
     favLibrary: [],
@@ -35,20 +38,6 @@ const appData = {
 
 // Document Ready
 $(document).ready(function () {
-
-    
-    // Update Profile Name
-    $('#app-welcome-name').text('Visitor');
-
-    // Set Listener on button
-    $('#btn-submit-profile').on('click', function () {
-        app_profile_submit_name();
-    });
-
-    // Set Listener on button
-    $('#btn-submit-profile-icon').on('click', function () {
-        app_profile_submit_icon();
-    });
 
     app_initialize();
 
