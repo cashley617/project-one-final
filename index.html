@@ -25,21 +25,25 @@
         <!-- Header -->
         <div class="app-letterbox-top d-flex justify-content-end align-items-center" id="app-stage-letterbox">
             <div class="app-container-profile-welcome mr-5">
-                <span class="text-welcome-message">Hello, Michael</span>
+                <span class="text-welcome-message">Hello, <span id="app-welcome-name"></span></span>
                 <img src="app/imgs/profile_icons/profile_3.png" width="40" height="40">
             </div>
         </div>
 
+        <!-- Logo -->
+        <div id="app-stage-logo" class="app-stage-logo">
+            <img src="app/imgs/logo/site-logo-main.png" alt="">
+        </div>
 
         <!-- Profile Creator -->
         <div id="app-stage-profile">
-            <!-- Initial login screen container -->
             <div class="d-flex justify-content-center mx-auto">
                 <div class="card app-profile-login-box">
-                    <h1>Hello, visitor!</h1>
+                    <h1>Hello, Visitor!</h1>
                     <h6>May I have your name please?</h6>
-                    <input type="text" class="input-profile-name" placeholder="New Profile Name"
-                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'New Profile Name'">
+                    <input type="text" id="input-field-profile-name" class="input-profile-name"
+                        placeholder="New Profile Name" onfocus="this.placeholder = ''"
+                        onblur="this.placeholder = 'New Profile Name'">
                     <button id="btn-submit-profile" type="button" class="input-btn">Create New Profile</button>
                 </div>
             </div>
@@ -61,7 +65,8 @@
                         <img src="app/imgs/profile_icons/profile_5.png" alt="">
                         <img src="app/imgs/profile_icons/profile_6.png" alt="">
                     </div>
-                    <button type="button" class="input-btn mt-3" id="btn-submit-profile-icon">Select Profile Icon</button>
+                    <button type="button" class="input-btn mt-3" id="btn-submit-profile-icon">Select Profile
+                        Icon</button>
                 </div>
             </div>
         </div>
@@ -138,8 +143,6 @@
         </div>
 
 
-
-        <!-- Login DIV -->
     </div>
 
 
