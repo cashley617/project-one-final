@@ -148,7 +148,7 @@ p {
 
 /* --- Profile Content --- */
 
-.app-profile-login-box {
+.app-profile-login-box, .app-profile-icon-box {
     width: 400px;
     background-color: var(--c-box);
     display: flex;
@@ -159,7 +159,16 @@ p {
     color: var(--c-white-light);
 }
 
-.app-profile-login-box h1, h6 {
+.app-profile-icon-box {
+    width: 600px;
+}
+
+.app-profile-login-box, h1, h6 {
+    font-weight: 300;
+    color: var(--c-orange);
+}
+
+.app-profile-icon-box, h1, h6 {
     font-weight: 300;
     color: var(--c-orange);
 }
@@ -194,7 +203,7 @@ p {
     outline: none;
 }
 
-.input-profile-btn {
+.input-btn {
     border: none;
     border-radius: 60px;
     padding: 5px 15px 5px 15px;
