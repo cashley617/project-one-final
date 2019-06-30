@@ -64,6 +64,9 @@ function app_initialize() {
         // Welcome Name: Update dom
         app_render_welcome_name();
 
+        // Render Navigation
+        app_render_nav_favorites();
+
         // Staging Logo: Hide from dom
         $('#app-stage-logo').remove();
         $('#app-stage-content').fadeIn('fast');
@@ -104,6 +107,29 @@ function app_profile_submit_name() {
     }
 }
 
+// Add new category
+function app_category_add_new() {
+
+    // Validate w/ early exit
+    let inputValue = $('#input-field-category-name').val();
+    if (inputValue === '') {
+
+        $('#input-field-category-name').css('border', '2px solid red');
+        //$('#app-input-warning').fadeIn('fast');
+        return null;
+    }
+
+    // Data has been validated
+    if (inputValue !== '') {
+
+        let catObject = { catName: inputValue, catLibrary: [] };
+        appProfile.favLibrary.push(catObject);
+        app_render_nav_favorites();
+        $.modal.close();
+        $('#modal-add-category').remove();
+    }
+}
+
 // Player Icon: Submit change
 function app_profile_submit_icon() {
 
@@ -125,7 +151,6 @@ function app_profile_submit_icon() {
 // Render Favorites
 function app_render_favorites() {
 
-
     let myHTML = `
     <div class="card app-content-item">
         <img class="card-img-top" src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg" alt="Card image cap">
@@ -142,12 +167,28 @@ function app_render_favorites() {
         </div>
     </div>`;
 
+    $('#app-content').empty();
     $('#app-content').append(myHTML);
     $('#app-content').append(myHTML);
     $('#app-content').append(myHTML);
     $('#app-content').append(myHTML);
     $('#app-content').append(myHTML);
-    $('#app-content').append(myHTML);
+}
+
+// Render Favorites Categories
+function app_render_nav_favorites() {
+
+    // Clear Navigation
+    $('#app-nav-content').empty();
+
+    appProfile.favLibrary.forEach(function (value, index) {
+        let myHTML = `
+            <div class="app-nav-box">
+                <p><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
+            </div>
+            <hr>`;
+        $('#app-nav-content').append(myHTML);
+    });
 }
 
 // Render: Update welcome name
@@ -160,7 +201,9 @@ function app_render_profile_icon() {
     $('#app-welcome-img').attr('src', 'app/imgs/profile_icons/' + appData.iconLibrary[appProfile.profileIcon]);
 }
 
+
 // --- Data Management --- //
+
 
 // Store Local Data
 function app_data_profile_store_local() {
