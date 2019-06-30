@@ -21,6 +21,10 @@ body, html {
     font-size: 15px;
 }
 
+a, a:active, a:visited {
+    color: var(--c-orange);
+}
+
 hr {
     margin: 0;
     margin-top: 2px;
@@ -126,10 +130,14 @@ p {
 
 .app-content-right {
     width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .app-content-item {
     width: 170px;
+    min-width: 170px;
     margin: 0 15px 15px 15px;
     border: 1px solid #353d43;
 }

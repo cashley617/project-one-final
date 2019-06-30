@@ -22,7 +22,7 @@ const appData = {
 }
 
 // User Profile Object
-const appProfile = {
+let appProfile = {
 
     // Local Profile Info
     profileID: 0,
@@ -42,7 +42,5 @@ const appProfile = {
 
 // Document Ready
 $(document).ready(function () {
-
     app_initialize();
-
 });

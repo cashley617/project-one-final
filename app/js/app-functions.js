@@ -16,7 +16,7 @@ function call_data() {
 }
 
 
-
+// Initialize App, first run
 function app_initialize() {
 
     // Check local storage
@@ -37,9 +37,9 @@ function app_initialize() {
 
         // Profile Icons: Create select icon listener
         $('#app-stage-profile-icon img').on('click', function () {
-            
+
             // Unselect other icons
-            $('#app-stage-profile-icon img').each(function() {
+            $('#app-stage-profile-icon img').each(function () {
                 $(this).removeClass('app-profile-icon-selected');
             });
 
@@ -58,8 +58,8 @@ function app_initialize() {
     // Profile Found. Load Data
     else {
 
-        // Local Storage: Load Data
-        app_data_profile_store_local();
+        // Get saved profile data and store local
+        app_data_profile_get_local();
 
         // Welcome Name: Update dom
         app_render_welcome_name();
@@ -88,7 +88,7 @@ function app_profile_submit_name() {
 
         // Save profile profile name and generate unique ID
         appProfile.profileName = inputValue;
-        appProfile.profileID   =  Math.random().toString(36).substr(2, 9);
+        appProfile.profileID = Math.random().toString(36).substr(2, 9);
 
         // Save to local storage
         app_data_profile_store_local();
@@ -122,6 +122,34 @@ function app_profile_submit_icon() {
 // ------ Render Utilities ------ //
 
 
+// Render Favorites
+function app_render_favorites() {
+
+
+    let myHTML = `
+    <div class="card app-content-item">
+        <img class="card-img-top" src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg" alt="Card image cap">
+        <div class="card-body app-content-item-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p>Left Side</p>
+                    <p>Left Side</p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <p>Right Side</p>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    $('#app-content').append(myHTML);
+    $('#app-content').append(myHTML);
+    $('#app-content').append(myHTML);
+    $('#app-content').append(myHTML);
+    $('#app-content').append(myHTML);
+    $('#app-content').append(myHTML);
+}
+
 // Render: Update welcome name
 function app_render_welcome_name() {
     $('#app-welcome-name').text(appProfile.profileName);
@@ -132,16 +160,25 @@ function app_render_profile_icon() {
     $('#app-welcome-img').attr('src', 'app/imgs/profile_icons/' + appData.iconLibrary[appProfile.profileIcon]);
 }
 
+// --- Data Management --- //
+
+// Store Local Data
+function app_data_profile_store_local() {
+    localStorage.setItem(appData.appPrefix, JSON.stringify(appProfile));
+}
+
+// Store Local Data
+function app_data_profile_get_local() {
+    appProfile = JSON.parse(localStorage.getItem(appData.appPrefix));
+}
+
 
 // ---- DEBUG ---- //
+
+
 function app_debug_clear_data() {
 
     event.preventDefault();
     localStorage.removeItem(appData.appPrefix);
     location.reload();
-}
-
-// Store Local Data
-function app_data_profile_store_local() {
-    localStorage.setItem(appData.appPrefix, JSON.stringify(appProfile));
 }
