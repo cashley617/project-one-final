@@ -20,7 +20,7 @@ function call_data() {
 function app_initialize() {
 
     // Check local storage
-    let profileCheck = localStorage.getItem('app-favflix-profile-id');
+    let profileCheck = localStorage.getItem('app-favflix');
 
     // If no profile found
     if (profileCheck === null) {
@@ -59,9 +59,7 @@ function app_initialize() {
     else {
 
         // Local Storage: Load Data
-        appData.profileID = localStorage.getItem('app-favflix-profile-id');
-        appData.profileName = localStorage.getItem('app-favflix-profile-name');
-        appData.profileIcon = localStorage.getItem('app-favflix-profile-icon');
+        app_data_profile_store_local();
 
         // Welcome Name: Update dom
         app_render_welcome_name();
@@ -89,13 +87,11 @@ function app_profile_submit_name() {
     if (inputValue !== '') {
 
         // Save profile profile name and generate unique ID
-        appData.profileName = inputValue;
-        appData.profileID = new Date().valueOf();
+        appProfile.profileName = inputValue;
+        appProfile.profileID   =  Math.random().toString(36).substr(2, 9);
 
         // Save to local storage
-        localStorage.setItem(appData.appPrefix + 'profile-id', appData.profileID);
-        localStorage.setItem(appData.appPrefix + 'profile-name', appData.profileName);
-        localStorage.setItem(appData.appPrefix + 'profile-icon', appData.profileIcon);
+        app_data_profile_store_local();
 
         // Update profile name display
         app_render_welcome_name();
@@ -108,13 +104,12 @@ function app_profile_submit_name() {
     }
 }
 
-
 // Player Icon: Submit change
 function app_profile_submit_icon() {
 
-    appData.profileIcon = appData.tempProfileSelected;
-    localStorage.setItem(appData.appPrefix + 'profile-icon', appData.profileIcon);
+    appProfile.profileIcon = appData.tempProfileSelected;
     app_render_profile_icon();
+    app_data_profile_store_local();
 
     // Fade out and trigger next stage
     $('#app-stage-logo').fadeOut('fast');
@@ -129,12 +124,12 @@ function app_profile_submit_icon() {
 
 // Render: Update welcome name
 function app_render_welcome_name() {
-    $('#app-welcome-name').text(appData.profileName);
+    $('#app-welcome-name').text(appProfile.profileName);
 }
 
 // Render: Update welcome profile icon
 function app_render_profile_icon() {
-    $('#app-welcome-img').attr('src', 'app/imgs/profile_icons/' + appData.iconLibrary[appData.profileIcon]);
+    $('#app-welcome-img').attr('src', 'app/imgs/profile_icons/' + appData.iconLibrary[appProfile.profileIcon]);
 }
 
 
@@ -142,9 +137,11 @@ function app_render_profile_icon() {
 function app_debug_clear_data() {
 
     event.preventDefault();
-    localStorage.removeItem(appData.appPrefix + 'profile-id')
-    localStorage.removeItem(appData.appPrefix + 'profile-name');
-    localStorage.removeItem(appData.appPrefix + 'profile-icon');
-
+    localStorage.removeItem(appData.appPrefix);
     location.reload();
+}
+
+// Store Local Data
+function app_data_profile_store_local() {
+    localStorage.setItem(appData.appPrefix, JSON.stringify(appProfile));
 }
