@@ -74,11 +74,13 @@
 
             <!-- Content Column -->
             <div class="app-content-right pl-2">
-                
+
                 <!-- Card Item -->
-                <div class="card">
-                    <img class="card-img-top" src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg" alt="Card image cap">
-                    <div class="card-body">
+                <div class="card app-content-item">
+                    <img class="card-img-top"
+                        src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg"
+                        alt="Card image cap">
+                    <div class="card-body app-content-item-body">
                         <div class="d-flex justify-content-between">
                             <div>
                                 <p>Left Side</p>
@@ -95,8 +97,27 @@
         </div>
 
 
+
+        <!-- Login DIV -->
+
+        <!-- Initial login screen container -->
+        <div class="d-flex justify-content-center mx-auto">
+            <div class="card app-profile-login-box">
+                <h1>Hello, visitor!</h1>
+                <h6>May I have your name please?</h6>
+                    <input type="text" class="input-profile-name" placeholder="New Profile Name"
+                        onfocus="this.placeholder = ''"
+                        onblur="this.placeholder = 'New Profile Name'">
+                    <button type="button" class="input-profile-btn">Create New Profile</button>
+                </div>
+            </div>
+        </div>
+
+
+
         <!-- End of Wrapper  -->
     </div>
+
 
 
     <!-- Core App JS -->
