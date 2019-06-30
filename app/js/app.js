@@ -37,7 +37,6 @@ let appProfile = {
     // Movie ID ex: favLibrary[0].catLibrary[0]
     favLibrary: [
         { catName: 'My Favorites', catLibrary: [] },
-        { catName: 'Christmas Movies', catLibrary: [] },
     ]
 }
 

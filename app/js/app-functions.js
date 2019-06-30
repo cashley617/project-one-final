@@ -99,6 +99,8 @@ function app_profile_submit_name() {
         // Update profile name display
         app_render_welcome_name();
 
+        app_render_nav_favorites();
+
         // Fade out and trigger next stage
         $('#app-stage-profile').fadeOut('fast', function () {
             $('#app-stage-profile-icon').fadeIn('fast');
@@ -122,9 +124,17 @@ function app_category_add_new() {
     // Data has been validated
     if (inputValue !== '') {
 
+        // Setup new category object with input value and push to local array
         let catObject = { catName: inputValue, catLibrary: [] };
         appProfile.favLibrary.push(catObject);
-        app_render_nav_favorites();
+
+        // Store profile data to local storage
+        app_data_profile_store_local();
+        
+        // Render new category addition
+        app_render_nav_add_append();
+        
+        // Close the modal and clear from dome
         $.modal.close();
         $('#modal-add-category').remove();
     }
@@ -175,6 +185,7 @@ function app_render_favorites() {
     $('#app-content').append(myHTML);
 }
 
+
 // Render Favorites Categories
 function app_render_nav_favorites() {
 
@@ -184,11 +195,23 @@ function app_render_nav_favorites() {
     appProfile.favLibrary.forEach(function (value, index) {
         let myHTML = `
             <div class="app-nav-box">
-                <p><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
+                <p><i class="fas fa-bookmark">&nbsp;</i><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
             </div>
             <hr>`;
         $('#app-nav-content').append(myHTML);
     });
+}
+
+// Render Favorites Categories
+function app_render_nav_add_append() {
+
+    let index = appProfile.favLibrary.length-1;
+    let myHTML = `
+        <div class="app-nav-box animate-puff-in">
+            <p><i class="fas fa-bookmark"></i><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
+        </div>
+        <hr>`;
+    $('#app-nav-content').append(myHTML);
 }
 
 // Render: Update welcome name

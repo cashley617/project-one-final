@@ -86,9 +86,10 @@ p {
     width: 100%;
     height: 30px;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     color: var(--c-white-light);
+    padding-left: 45px;
 }
 
 .nav-selected {
@@ -111,7 +112,7 @@ p {
     justify-content: left;
     align-items: center;
     color: #f39c11;
-    padding-left: 5px;
+    padding-left: 10px;
 }
 
 .app-nav-box:hover {
@@ -267,11 +268,12 @@ p {
     align-items: center;
     height: 100%;
 }
+
 /* --- App Stages --- */
 
 #app-stage-profile {
     display: none;
-    transform:translateY(30%);
+    transform: translateY(30%);
 }
 
 #app-stage-content {
@@ -280,9 +282,8 @@ p {
 
 #app-stage-profile-icon {
     display: none;
-    transform:translateY(16%);    
+    transform: translateY(16%);
 }
-
 
 /* Animations */
 
@@ -291,4 +292,45 @@ p {
     -moz-transition: opacity 0.5s ease-in;
     -o-transition: opacity 0.5s ease-in;
     transition: opacity 0.5s ease-in;
+}
+
+.animate-puff-in {
+    -webkit-animation: animate-puff-in 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550) both;
+    animation: animate-puff-in 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550) both;
+}
+
+/* Keyframes */
+
+@-webkit-keyframes animate-puff-in {
+    0% {
+        -webkit-transform: scale(2);
+        transform: scale(2);
+        -webkit-filter: blur(2px);
+        filter: blur(2px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        -webkit-filter: blur(0px);
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes animate-puff-in {
+    0% {
+        -webkit-transform: scale(2);
+        transform: scale(2);
+        -webkit-filter: blur(5px);
+        filter: blur(5px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        -webkit-filter: blur(0px);
+        filter: blur(0px);
+        opacity: 1;
+    }
 }
