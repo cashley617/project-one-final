@@ -13,7 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic"
         rel="stylesheet">
-    <script src="https://kit.fontawesome.com/d888994262.js"></script>
+    <script rel="preload" as="style" src="https://kit.fontawesome.com/d888994262.js"></script>
     <title>FavFlix - Project One</title>
 </head>
 
@@ -21,114 +21,125 @@
 
     <!-- Setting initial wrapper container -->
     <div class="container-fluid app-wrapper">
-        <div class="app-letterbox-top d-flex justify-content-end align-items-center">
+
+        <!-- Header -->
+        <div class="app-letterbox-top d-flex justify-content-end align-items-center" id="app-stage-letterbox">
             <div class="app-container-profile-welcome mr-5">
                 <span class="text-welcome-message">Hello, Michael</span>
                 <img src="app/imgs/profile_icons/profile_3.png" width="40" height="40">
             </div>
         </div>
 
-        <div class="container d-flex justify-content-between mt-5">
-            <div class="left-column-width text-center">
-                <img src="app/imgs/logo/site-logo-main.png" alt="">
-            </div>
 
-            <div class="container-form">
-                <input class="input-form-search" placeholder="Search Netflix..." aria-label="Search Netflix">
-                <i class="fas fa-search"></i>
+        <!-- Profile Creator -->
+        <div id="app-stage-profile">
+            <!-- Initial login screen container -->
+            <div class="d-flex justify-content-center mx-auto">
+                <div class="card app-profile-login-box">
+                    <h1>Hello, visitor!</h1>
+                    <h6>May I have your name please?</h6>
+                    <input type="text" class="input-profile-name" placeholder="New Profile Name"
+                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'New Profile Name'">
+                    <button id="btn-submit-profile" type="button" class="input-btn">Create New Profile</button>
+                </div>
             </div>
         </div>
 
-        <!-- Main Content Container -->
-        <div class="container d-flex mt-5 app-container-content">
+        <!-- Peofile Icon Selection -->
+        <div id="app-stage-profile-icon">
+            <div class="d-flex justify-content-center">
+                <div class="card app-profile-icon-box">
+                    <h1>Please choose an avatar:</h1>
+                    <div class="d-flex justify-content-around mb-4 mt-3 w-75">
+                        <img src="app/imgs/profile_icons/profile_1.png" alt="">
+                        <img src="app/imgs/profile_icons/profile_2.png" alt="">
+                        <img src="app/imgs/profile_icons/profile_3.png" alt="">
+                    </div>
 
-            <!-- Navigation Column -->
-            <div class="app-content-left left-column-width">
+                    <div class="d-flex justify-content-around w-75">
+                        <img src="app/imgs/profile_icons/profile_4.png" alt="">
+                        <img src="app/imgs/profile_icons/profile_5.png" alt="">
+                        <img src="app/imgs/profile_icons/profile_6.png" alt="">
+                    </div>
+                    <button type="button" class="input-btn mt-3" id="btn-submit-profile-icon">Select Profile Icon</button>
+                </div>
+            </div>
+        </div>
 
-                <div class="app-nav-header">
-                    <i class="fas fa-question">&nbsp;</i>Party Picker
+        <!-- Main Content -->
+        <div id="app-stage-content">
+            <div class="container d-flex justify-content-between mt-5">
+                <div class="left-column-width text-center">
+                    <img src="app/imgs/logo/site-logo-main.png" alt="">
                 </div>
-                <hr>
 
-                <div class="app-nav-header">
-                    <i class="fas fa-calendar-alt">&nbsp;</i>Binge Tracker!
+                <div class="container-form">
+                    <input class="input-form-search" placeholder="Search Netflix..." aria-label="Search Netflix">
+                    <i class="fas fa-search"></i>
                 </div>
-                <hr>
-                <div class="app-nav-header">
-                    <i class="fas fa-heart">&nbsp;</i>Favorites!
-                </div>
-                <hr>
-                <div class="app-nav-box nav-selected">
-                    <p>Scary Movies</p>
-                </div>
-                <hr>
-                <div class="app-nav-box">
-                    <p>Christmas Movies</p>
-                </div>
-                <hr>
-                <div class="app-nav-box">
-                    <p>Comedy Shows</p>
-                </div>
-                <hr>
             </div>
 
-            <!-- Content Column -->
-            <div class="app-content-right pl-2">
+            <!-- Main Content Container -->
+            <div class="container d-flex mt-5 app-container-content">
 
-                <!-- Card Item -->
-                <div class="card app-content-item">
-                    <img class="card-img-top"
-                        src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg"
-                        alt="Card image cap">
-                    <div class="card-body app-content-item-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <p>Left Side</p>
-                                <p>Left Side</p>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <p>Right Side</p>
+                <!-- Navigation Column -->
+                <div class="app-content-left left-column-width">
+
+                    <div class="app-nav-header">
+                        <i class="fas fa-question">&nbsp;</i>Party Picker
+                    </div>
+                    <hr>
+
+                    <div class="app-nav-header">
+                        <i class="fas fa-calendar-alt">&nbsp;</i>Binge Tracker!
+                    </div>
+                    <hr>
+                    <div class="app-nav-header">
+                        <i class="fas fa-heart">&nbsp;</i>Favorites!
+                    </div>
+                    <hr>
+                    <div class="app-nav-box nav-selected">
+                        <p>Scary Movies</p>
+                    </div>
+                    <hr>
+                    <div class="app-nav-box">
+                        <p>Christmas Movies</p>
+                    </div>
+                    <hr>
+                    <div class="app-nav-box">
+                        <p>Comedy Shows</p>
+                    </div>
+                    <hr>
+                </div>
+
+                <!-- Content Column -->
+                <div class="app-content-right pl-2">
+
+                    <!-- Card Item -->
+                    <div class="card app-content-item">
+                        <img class="card-img-top"
+                            src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg"
+                            alt="Card image cap">
+                        <div class="card-body app-content-item-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Left Side</p>
+                                    <p>Left Side</p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <p>Right Side</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
 
 
 
         <!-- Login DIV -->
-
-        <!-- Initial login screen container -->
-        <div class="d-flex justify-content-center mx-auto">
-            <div class="card app-profile-login-box">
-                <h1>Hello, visitor!</h1>
-                <h6>May I have your name please?</h6>
-                <input type="text" class="input-profile-name" placeholder="New Profile Name"
-                    onfocus="this.placeholder = ''" onblur="this.placeholder = 'New Profile Name'">
-                <button type="button" class="input-btn">Create New Profile</button>
-            </div>
-        </div>
-
-        <!-- Peofile Icon Selection -->
-        <div class="d-flex justify-content-center mx-auto">
-            <div class="card app-profile-icon-box">
-                <h1>Please choose an avatar:</h1>
-                <div class="d-flex justify-content-around mb-4 mt-3 w-75">
-                    <img src="app/imgs/profile_icons/profile_1.png" alt="">
-                    <img src="app/imgs/profile_icons/profile_2.png" alt="">
-                    <img src="app/imgs/profile_icons/profile_3.png" alt="">
-                </div>
-
-                <div class="row d-flex justify-content-around w-75">
-                    <img src="app/imgs/profile_icons/profile_4.png" alt="">
-                    <img src="app/imgs/profile_icons/profile_5.png" alt="">
-                    <img src="app/imgs/profile_icons/profile_6.png" alt="">
-                </div>
-                <button type="button" class="input-btn mt-3">Select Profile</button>
-            </div>
-        </div>
     </div>
 
 
@@ -139,8 +150,8 @@
 
 
     <!-- Core App JS -->
-    <!-- <script src="app/js/app-functions.js"></script> -->
-    <!-- <script src="app/js/app.js"></script> -->
+    <script src="app/js/app-functions.js"></script>
+    <script src="app/js/app.js"></script>
 </body>
 
 </html>

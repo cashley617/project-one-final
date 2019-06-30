@@ -173,6 +173,16 @@ p {
     color: var(--c-orange);
 }
 
+.app-profile-icon-box img {
+    border: 5px solid var(--c-orange);
+    border-radius: 60px;
+}
+
+.app-profile-icon-box img:hover {
+    border: 5px solid var(--c-green);
+    cursor: pointer;
+}
+
 /* --- Input & Forms --- */
 
 .input-form-search {
@@ -216,9 +226,41 @@ p {
     color: var(--c-white-light);
 }
 
-.input-profile-btn:hover {
+.input-btn:hover {
     background-color: #13cc60;
 }
-.input-profile-btn:focus {
+
+.input-btn:focus {
     outline: none;
+}
+
+.input-btn-locked {
+    opacity: 0.3;
+}
+
+
+/* --- App Stages --- */
+
+#app-stage-profile {
+    display: none;
+    margin-top: 200px;
+}
+
+#app-stage-content {
+    display: none;
+}
+
+#app-stage-profile-icon {
+    display: none;
+    margin-top: 130px;
+}
+
+
+/* Animations */
+
+.animate-fade-in {
+    -webkit-transition: opacity 0.5s ease-in;
+    -moz-transition: opacity 0.5s ease-in;
+    -o-transition: opacity 0.5s ease-in;
+    transition: opacity 0.5s ease-in;
 }
