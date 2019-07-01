@@ -16,6 +16,26 @@ function call_data() {
 }
 
 
+function app_api_get_new_releases() {
+    $.ajax({
+        url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
+        headers: {
+            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
+            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+        },
+
+        success: function (response) {
+
+            console.log(response)
+            appData.newReleaseLibrary = response.ITEMS;
+            console.log(appData.newReleaseLibrary);
+            app_render_new_releases();
+        }
+
+    });
+}
+
+
 // Initialize App, first run
 function app_initialize() {
 
@@ -41,10 +61,15 @@ function app_initialize() {
             // Unselect other icons
             $('#app-stage-profile-icon img').each(function () {
                 $(this).removeClass('app-profile-icon-selected');
+                $(this).removeClass('animate-bounce');
             });
 
             // Select clicked icon
             $(this).addClass('app-profile-icon-selected');
+
+            setTimeout(() => {
+                $(this).addClass('animate-bounce');
+            }, 1);
 
             // Update selected value
             appData.tempProfileSelected = $(this).attr('data-id');
@@ -130,10 +155,10 @@ function app_category_add_new() {
 
         // Store profile data to local storage
         app_data_profile_store_local();
-        
+
         // Render new category addition
         app_render_nav_add_append();
-        
+
         // Close the modal and clear from dome
         $.modal.close();
         $('#modal-add-category').remove();
@@ -156,6 +181,42 @@ function app_profile_submit_icon() {
 
 
 // ------ Render Utilities ------ //
+
+
+// Render New Releases
+function app_render_new_releases() {
+
+    $('#app-content').empty();
+
+    for (let i = 0; i < 8; i++) {
+
+        // Title truncate
+        let dots = '';
+        let itemTitle   = appData.newReleaseLibrary[i].title.slice(0, 22) + "...";
+        let itemRuntime = appData.newReleaseLibrary[i].runtime;
+        let myHTML = `
+        <div class="card app-content-item">
+            <img class="card-img-top loading" src="${appData.newReleaseLibrary[i].image}" alt="Card image cap">
+            <div class="card-body app-content-item-body">
+            
+                <div>
+                    <p>${itemTitle}</p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <p><i class="fas fa-plus-circle btn-add-fav"></i></p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $('#app-content').append(myHTML);
+    }
+}
 
 
 // Render Favorites
@@ -205,10 +266,10 @@ function app_render_nav_favorites() {
 // Render Favorites Categories
 function app_render_nav_add_append() {
 
-    let index = appProfile.favLibrary.length-1;
+    let index = appProfile.favLibrary.length - 1;
     let myHTML = `
         <div class="app-nav-box animate-puff-in">
-            <p><i class="fas fa-bookmark"></i><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
+            <p><i class="fas fa-bookmark">&nbsp;</i><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
         </div>
         <hr>`;
     $('#app-nav-content').append(myHTML);

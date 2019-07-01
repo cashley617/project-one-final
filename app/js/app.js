@@ -1,5 +1,8 @@
 /// --- Core Application --- ///
 
+// Preload Gif
+var loadGif = new Image();
+loadGif.src = 'app/imgs/loading_icons/loading_spinner.gif';
 
 // App Data Object
 const appData = {
@@ -17,7 +20,9 @@ const appData = {
         'profile_4.png',
         'profile_5.png',
         'profile_6.png',
-    ]
+    ],
+
+    newReleaseLibrary: []
 
 }
 
@@ -64,4 +69,7 @@ $(document).ready(function () {
             $(html).appendTo('body').modal(modalProp);
         });
     });
+
+    // Get New Releases
+    app_api_get_new_releases();
 });
