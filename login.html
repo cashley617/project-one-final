@@ -26,68 +26,56 @@
 
     <!-- Setting initial wrapper container -->
     <div class="wrapper">
-        <nav class="navbar navbar-dark bg-dark"></nav>
+        <div class="app-modal" id="modal-list-add">
+            <div class="app-modal-container-list-add">
 
-        <!-- Will need to insert logo/graphic here -->
-        <div class="logo-container d-flex justify-content-center m-auto">
-            <h1>FavFlix</h1>
-        </div>
+                <!-- Image Container -->
+                <div>
+                    <img src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg">
+                </div>
 
-        <!-- Initial login screen container -->
-        <div class="init-login-container d-flex justify-content-center mx-auto">
-            <div class="card bg-dark" style="width: 25rem;">
-                <h1 class="card-title d-flex justify-content-center text-warning">Hello!</h1>
-                <h6 class="card-subtitle mb-2 d-flex justify-content-center text-warning">What is your name?</h6>
-                    <div class="card-body text-danger">
-                        <div class="input-group mb-3 d-flex justify-content-center">
-                            <input type="text" class="form-control" placeholder="New Profile Name" aria-label="Recipient's username"
-                                aria-describedby="basic-addon2">
+                <!-- Content Container -->
+                <div class="app-modal-list-add-content">
+
+                    <!-- Content Cell -->
+                    <div class="modal-content-cell">
+                        <div class="modal-list-box">
+                            <p>Binge Tracker</p>
                         </div>
-                        <div class="submit-button d-flex justify-content-center">
-                            <button type="button" class="btn btn-success">Submit</button>
-                        </div>
-                    </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Setting second wrapper container -->
-    <div class="wrapper">
-
-        <!-- Will need to insert logo/graphic here. Will need to remove mt -->
-        <div class="logo-container d-flex justify-content-center mt-5">
-            <h1>FavFlix</h1>
-        </div>
-
-        <!-- Second login screen container -->
-        <div class="second-login-container d-flex justify-content-center mx-auto">
-            <div class="card bg-dark" style="width: 35rem;">
-                <div class="card-body text-danger">
-                <h6 class="card-subtitle mb-5 d-flex justify-content-center text-warning">Please choose your avatar</h6>
-                
-                    <!-- This div will hold avatars -->
-                    <div class="mb-3">
-                        <div class="row d-flex justify-content-around mb-4">
-                            <img src="app/imgs/profile_icons/profile_1.png" alt="">
-                            <img src="app/imgs/profile_icons/profile_2.png" alt="">
-                            <img src="app/imgs/profile_icons/profile_3.png" alt="">
-                        </div>
-
-                        <div class="row d-flex justify-content-around">
-                            <img src="app/imgs/profile_icons/profile_4.png" alt="">
-                            <img src="app/imgs/profile_icons/profile_5.png" alt="">
-                            <img src="app/imgs/profile_icons/profile_6.png" alt="">
+                        <div>
+                            <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
                         </div>
                     </div>
 
-                    <div class="submit-button d-flex justify-content-center">
-                        <button type="button" class="btn btn-success">Submit</button>
+                    <!-- Content Cell -->
+                    <div class="modal-content-cell">
+                        <div class="modal-list-box">
+                            <p>Mystery Picker</p>
+                        </div>
+                        <div>
+                            <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                        </div>
+                    </div>
+
+                    <!-- Content Cell -->
+                    <div class="modal-content-cell">
+                        <div class="modal-list-box">
+                            <select class="modal-input-select">
+                                <option value="My Favorites" selected>My Favorites</option>
+                                <option value="Christmas Movies" selected>My Favorites</option>
+                                <option value="Scary TV" selected>My Favorites</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-    <!-- End of Wrapper -->
+
+        <!-- End of Wrapper -->
     </div>
 
 

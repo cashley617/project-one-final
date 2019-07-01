@@ -25,8 +25,6 @@ function app_api_get_new_releases() {
         },
 
         success: function (response) {
-
-            console.log(response)
             appData.newReleaseLibrary = response.ITEMS;
             console.log(appData.newReleaseLibrary);
             app_render_new_releases();
@@ -182,7 +180,8 @@ function app_profile_submit_icon() {
 // Store selected item into local object
 function app_list_display_add_item(item) {
     appData.itemStorage = appData.newReleaseLibrary[item];
-    app_render_list_add();
+    console.log(appData.itemStorage.title);
+    app_render_modal_list_add();
 }
 
 
@@ -194,27 +193,63 @@ function app_render_content_header(headerText) {
 }
 
 
-function app_render_list_add() {
-    
+function app_render_modal_list_add() {
+
+    let movieTitle = appData.itemStorage.title;
+    let movieIMG = appData.itemStorage.image;
+
     let myHTML = `
-    <div class="app-modal modal" id="modal-list-add">
-        <div class="app-modal-container">
-            <h1>HELLO</h1>
-            <input type="text" id="input-field-category-name" class="input-category-name" placeholder="Ex: Christmas Movies"
-                onfocus="this.placeholder = ''" onblur="this.placeholder = 'Ex: Christmas Movies'">
-            <button onclick="app_category_add_new()" type="button" class="input-btn">Create Category</button>
-            <a href="#" rel="modal:close">Close This</a>
+    <div class="app-modal" id="modal-list-add">
+    <div class="app-modal-container-list-add">
+        
+        <div>
+            <img src="${movieIMG}">
         </div>
-    </div>`;
+        <div class="app-modal-list-add-content">
+            <div class="modal-content-cell">
+                <div class="modal-list-box">
+                    <p>Binge Tracker</p>
+                </div>
+                <div>
+                    <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                </div>
+            </div>
+            <div class="modal-content-cell">
+                <div class="modal-list-box">
+                    <p>Mystery Picker</p>
+                </div>
+                <div>
+                    <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                </div>
+            </div>
+            <div class="modal-content-cell">
+                <div class="modal-list-box">
+                    <select class="modal-input-select">
+                        <option value="My Favorites" selected>My Favorites</option>
+                        <option value="Christmas Movies" selected>My Favorites</option>
+                        <option value="Scary TV" selected>My Favorites</option>
+                    </select>
+                </div>
+                <div>
+                    <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`;
 
     $('body').append(myHTML);
     $('#modal-list-add').modal(
         {
-            showClose: false,
-            clickClose: false,
+            showClose: true,
+            clickClose: true,
             fadeDuration: 200
         }
     );
+
+    $('#modal-list-add').on($.modal.CLOSE, function(event, modal) {
+        $(this).remove();
+    });
 }
 
 // Render New Releases
@@ -340,7 +375,7 @@ function app_data_profile_get_local() {
 
 // --- Modal ---- //
 function app_modal_rebind_listeners() {
-    
+
     // Grab every modal link and rebind
     $('a.modal-ajax').each(function () {
         $(this).off('click').on('click', function (event) {

@@ -285,11 +285,13 @@ p {
 
 /* --- Modals --- */
 
-.app-modal { 
+.app-modal {
+    width: 400px;
     height: 300px;
     background-color: var(--c-site-bg) !important;
     padding: 0;
 }
+
 
 .app-modal-container {
     display: flex;
@@ -297,8 +299,66 @@ p {
     justify-content: center;
     align-items: center;
     height: 100%;
+    width: 100%;
 }
 
+
+.app-modal-container-list-add {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.app-modal-list-add-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.modal-list-box {
+    display: flex;
+    align-items: center;
+    background-color: #221f25;
+    width: 150px;
+    padding-left: 15px;
+    padding-bottom: 3px;
+    border-radius: 5px;
+    margin-right: 10px;
+    color: var(--c-white-light);
+}
+
+.modal-content-cell {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.modal-input-select {
+    font-family: 'Robot', sans-serif;
+    font-size: 14px;
+    border: none;
+    width: 140px;
+    margin-left: -10px;
+    background-color: transparent;
+    color: orange;
+}
+
+.modal-input-select option {
+    background-color: #221f25;
+}
+
+.modal-input-btn {
+    padding: 2px 10px 2px 10px;
+}
+
+.modal {
+    overflow: initial;
+}
 /* --- App Stages --- */
 
 #app-stage-profile {
