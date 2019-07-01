@@ -126,7 +126,8 @@ p {
 .loading {
     width: 168px;
     height: 233px;
-    background: transparent url('../../../app/imgs/loading_icons/loading_spinner.gif') center no-repeat;
+    background-color: #282828;
+    background: url('../../../app/imgs/loading_icons/loading_spinner.gif') center no-repeat;
 }
 
 .btn-add-fav {
@@ -284,13 +285,13 @@ p {
 
 /* --- Modals --- */
 
-.app-modal {
+.app-modal { 
     height: 300px;
     background-color: var(--c-site-bg) !important;
     padding: 0;
 }
 
-.app-modal-add-category {
+.app-modal-container {
     display: flex;
     flex-direction: column;
     justify-content: center;

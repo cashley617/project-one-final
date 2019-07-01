@@ -179,9 +179,43 @@ function app_profile_submit_icon() {
     });
 }
 
+// Store selected item into local object
+function app_list_display_add_item(item) {
+    appData.itemStorage = appData.newReleaseLibrary[item];
+    app_render_list_add();
+}
+
 
 // ------ Render Utilities ------ //
 
+// Update Content Header
+function app_render_content_header(headerText) {
+    $('#app-content-header').text(headerText);
+}
+
+
+function app_render_list_add() {
+    
+    let myHTML = `
+    <div class="app-modal modal" id="modal-list-add">
+        <div class="app-modal-container">
+            <h1>HELLO</h1>
+            <input type="text" id="input-field-category-name" class="input-category-name" placeholder="Ex: Christmas Movies"
+                onfocus="this.placeholder = ''" onblur="this.placeholder = 'Ex: Christmas Movies'">
+            <button onclick="app_category_add_new()" type="button" class="input-btn">Create Category</button>
+            <a href="#" rel="modal:close">Close This</a>
+        </div>
+    </div>`;
+
+    $('body').append(myHTML);
+    $('#modal-list-add').modal(
+        {
+            showClose: false,
+            clickClose: false,
+            fadeDuration: 200
+        }
+    );
+}
 
 // Render New Releases
 function app_render_new_releases() {
@@ -191,8 +225,7 @@ function app_render_new_releases() {
     for (let i = 0; i < 8; i++) {
 
         // Title truncate
-        let dots = '';
-        let itemTitle   = appData.newReleaseLibrary[i].title.slice(0, 22) + "...";
+        let itemTitle = appData.newReleaseLibrary[i].title.slice(0, 22) + "...";
         let itemRuntime = appData.newReleaseLibrary[i].runtime;
         let myHTML = `
         <div class="card app-content-item">
@@ -208,7 +241,7 @@ function app_render_new_releases() {
                         <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
                     </div>
                     <div class="d-flex align-items-center">
-                        <p><i class="fas fa-plus-circle btn-add-fav"></i></p>
+                        <p><a href="#" onclick="app_list_display_add_item(${i})"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
                     </div>
                 </div>
             </div>
@@ -216,11 +249,17 @@ function app_render_new_releases() {
 
         $('#app-content').append(myHTML);
     }
+
+    // Rebind Modal Listeners
+    app_modal_rebind_listeners();
 }
 
 
 // Render Favorites
 function app_render_favorites() {
+
+    // Update section header
+    app_render_content_header("Favorites")
 
     let myHTML = `
     <div class="card app-content-item">
@@ -288,7 +327,6 @@ function app_render_profile_icon() {
 
 // --- Data Management --- //
 
-
 // Store Local Data
 function app_data_profile_store_local() {
     localStorage.setItem(appData.appPrefix, JSON.stringify(appProfile));
@@ -300,6 +338,31 @@ function app_data_profile_get_local() {
 }
 
 
+// --- Modal ---- //
+function app_modal_rebind_listeners() {
+    
+    // Grab every modal link and rebind
+    $('a.modal-ajax').each(function () {
+        $(this).off('click').on('click', function (event) {
+
+            // Unfocus, stop default.
+            this.blur();
+            event.preventDefault();
+
+            // Set modal config
+            let modalProp = {
+                showClose: false,
+                clickClose: false,
+                fadeDuration: 200
+            }
+
+            // Get the modal file and render
+            $.get(this.href, function (html) {
+                $(html).appendTo('body').modal(modalProp);
+            });
+        });
+    });
+}
 // ---- DEBUG ---- //
 
 
