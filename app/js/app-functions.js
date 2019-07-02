@@ -179,8 +179,7 @@ function app_profile_submit_icon() {
 
 // Store selected item into local object
 function app_list_display_add_item(item) {
-    appData.itemStorage = appData.newReleaseLibrary[item];
-    console.log(appData.itemStorage.title);
+    appData.itemModalStorage = appData.newReleaseLibrary[item];
     app_render_modal_list_add();
 }
 
@@ -195,9 +194,21 @@ function app_render_content_header(headerText) {
 
 function app_render_modal_list_add() {
 
-    let movieTitle = appData.itemStorage.title;
-    let movieIMG = appData.itemStorage.image;
+    // Get item information from storage
+    let movieTitle = appData.itemModalStorage.title;
+    let movieIMG = appData.itemModalStorage.image;
+    let optionHTML = ``;
 
+    // Setup HTML of Dropdown Choices
+    appProfile.favLibrary.forEach(function(data, index) {
+        
+        let selected = '';
+        let option = data.catName;
+        if (index === 0) { selected = 'selected'}
+        optionHTML += `<option value="${option}" ${selected}>${option}</option>`
+
+    });
+    
     let myHTML = `
     <div class="app-modal" id="modal-list-add">
     <div class="app-modal-container-list-add">
@@ -225,9 +236,7 @@ function app_render_modal_list_add() {
             <div class="modal-content-cell">
                 <div class="modal-list-box">
                     <select class="modal-input-select">
-                        <option value="My Favorites" selected>My Favorites</option>
-                        <option value="Christmas Movies" selected>My Favorites</option>
-                        <option value="Scary TV" selected>My Favorites</option>
+                    ${optionHTML}
                     </select>
                 </div>
                 <div>

@@ -24,7 +24,7 @@ const appData = {
 
     newReleaseLibrary: [],
 
-    itemStorage: {}
+    itemReviewSotrage: {}
 
 }
 
@@ -50,7 +50,6 @@ let appProfile = {
 // Document Ready
 $(document).ready(function () {
     app_initialize();
-
 
     app_modal_rebind_listeners();
 
