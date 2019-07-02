@@ -32,8 +32,37 @@ function app_api_get_new_releases() {
     });
 }
 
-function app_api_get_title_info(itemID) {
+function app_render_list_cached() {
+        
+    appData.lastListLibrary.forEach(function (data, index) {
 
+        // Title truncate
+        let itemTitle = data.nfinfo.title.slice(0, 2) + "...";
+        let itemRuntime = data.nfinfo.runtime;
+        let myHTML = `
+            <div class="card app-content-item">
+                <img class="card-img-top loading" src="${data.nfinfo.image1}" alt="Card image cap">
+                <div class="card-body app-content-item-body">
+                    <div>
+                        <p>${itemTitle}</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                        </div>
+                    </div>
+                </div>
+        </div>`;
+        $('#app-content').append(myHTML);
+    });
+}
+
+function app_api_get_title_info(itemID) {
     $.ajax({
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
         headers: {
@@ -48,24 +77,23 @@ function app_api_get_title_info(itemID) {
             let itemTitle = response.RESULT.nfinfo.title.slice(0, 2) + "...";
             let itemRuntime = response.RESULT.nfinfo.runtime;
             let myHTML = `
-        
-        <div class="card app-content-item">
-            <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
-            <div class="card-body app-content-item-body">
-                <div>
-                    <p>${itemTitle}</p>
-                </div>
+                    <div class="card app-content-item">
+                        <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
+                        <div class="card-body app-content-item-body">
+                            <div>
+                                <p>${itemTitle}</p>
+                            </div>
 
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+                </div>`;
 
             $('#app-content').append(myHTML);
         }
@@ -367,11 +395,15 @@ function app_render_favorites(listIndex) {
     // Clear original content
     $('#app-content').empty();
 
-
-    // Loop through and send requests for every item in list
-    appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
-        app_api_get_title_info(data);
-    });
+    // Check if list needs update
+    if (appData.listNeedsUpdate) {
+        appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
+            app_api_get_title_info(data);
+        });
+        appData.listNeedsUpdate = false; 
+    } else {
+        app_render_list_cached();
+    }
 }
 
 

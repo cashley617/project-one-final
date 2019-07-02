@@ -10,6 +10,9 @@ const appData = {
     // Temporary data storage for profile creation
     tempProfileSelected: 0,
 
+    // Flag if list needs updated
+    listNeedsUpdate: true,
+
     // Data storage app identifier prefix
     appPrefix: 'app-favflix',
 
@@ -23,9 +26,7 @@ const appData = {
     ],
 
     newReleaseLibrary: [],
-
     lastListLibrary: [],
-
     itemModalStorage: {}
 
 }
