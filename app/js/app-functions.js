@@ -33,11 +33,14 @@ function app_api_get_new_releases() {
 }
 
 function app_render_list_cached() {
-        
+
     appData.lastListLibrary.forEach(function (data, index) {
 
         // Title truncate
-        let itemTitle = data.nfinfo.title.slice(0, 2) + "...";
+        let itemTitle = data.nfinfo.title;
+        if (itemTitle.length > 22) {
+            itemTitle = itemTitle.slice(0, 22) + "...";
+        }
         let itemRuntime = data.nfinfo.runtime;
         let myHTML = `
             <div class="card app-content-item">
@@ -74,7 +77,11 @@ function app_api_get_title_info(itemID) {
             appData.lastListLibrary.push(response.RESULT);
 
             // Title truncate
-            let itemTitle = response.RESULT.nfinfo.title.slice(0, 2) + "...";
+            let itemTitle = response.RESULT.nfinfo.title;
+            if (itemTitle.length > 22) {
+                itemTitle = itemTitle.slice(0, 22) + "...";
+            }
+
             let itemRuntime = response.RESULT.nfinfo.runtime;
             let myHTML = `
                     <div class="card app-content-item">
@@ -356,10 +363,14 @@ function app_render_new_releases() {
 
     $('#app-content').empty();
 
+    console.log(appData.newReleaseLibrary)
     for (let i = 0; i < 8; i++) {
 
         // Title truncate
-        let itemTitle = appData.newReleaseLibrary[i].title.slice(0, 22) + "...";
+        let itemTitle = appData.newReleaseLibrary[i].title;
+        if (itemTitle.length > 22) {
+            itemTitle = itemTitle.slice(0, 22) + "...";
+        }
         let itemRuntime = appData.newReleaseLibrary[i].runtime;
         let myHTML = `
         <div class="card app-content-item">
@@ -395,14 +406,22 @@ function app_render_favorites(listIndex) {
     // Clear original content
     $('#app-content').empty();
 
-    // Check if list needs update
-    if (appData.listNeedsUpdate) {
-        appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
-            app_api_get_title_info(data);
-        });
-        appData.listNeedsUpdate = false; 
-    } else {
-        app_render_list_cached();
+    // Display items from list if there are any
+    if (appProfile.favLibrary[listIndex].catLibrary.length > 0) {
+        // Check if list needs update
+        if (appData.listNeedsUpdate) {
+            appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
+                app_api_get_title_info(data);
+            });
+            appData.listNeedsUpdate = false;
+        } else {
+            app_render_list_cached();
+        }
+    }
+
+    // Display No items
+    if (appProfile.favLibrary[listIndex].catLibrary.length === 0) {
+        $('#app-content').text("Sorry! Nothing in this list!");
     }
 }
 
@@ -466,10 +485,12 @@ function app_data_item_add_to_list() {
 
     // Add to list library
     appProfile.favLibrary[inputValue].catLibrary.push(movieID);
-    console.log(appProfile.favLibrary[inputValue]);
 
     // Store to local storage
     app_data_profile_store_local();
+
+    // Flag list update tracker
+    appData.listNeedsUpdate = true;
 }
 
 
