@@ -24,7 +24,7 @@ const appData = {
 
     newReleaseLibrary: [],
 
-    itemReviewSotrage: {}
+    itemModalStorage: {}
 
 }
 

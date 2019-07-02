@@ -107,7 +107,7 @@ function app_profile_submit_name() {
         $('#input-field-profile-name').css('border', '2px solid red');
         //$('#app-input-warning').fadeIn('fast');
         return null;
-    }
+    }  
 
     // Data has been validated
     if (inputValue !== '') {
@@ -191,6 +191,33 @@ function app_render_content_header(headerText) {
     $('#app-content-header').text(headerText);
 }
 
+
+function app_render_modal_category_add() {
+    
+    let myHTML = `
+        <div class="app-modal modal" id="modal-add-category">
+            <div class="app-modal-container">
+                <h1>Add New Category</h1>
+                <input type="text" id="input-field-category-name" class="input-category-name" placeholder="Ex: Christmas Movies"
+                    onfocus="this.placeholder = ''" onblur="this.placeholder = 'Ex: Christmas Movies'">
+                <button onclick="app_category_add_new()" type="button" class="input-btn">Create Category</button>
+                <a href="#" onclick="app_category_add_new()" rel="modal:close">Close This</a>
+            </div>
+        </div>`;
+
+    $('body').append(myHTML);
+    $('#modal-add-category').modal(
+        {
+            showClose: true,
+            clickClose: true,
+            fadeDuration: 200
+        }
+    );
+
+    $('#modal-add-category').on($.modal.CLOSE, function(event, modal) {
+        $(this).remove();
+    });
+}
 
 function app_render_modal_list_add() {
 
@@ -293,9 +320,6 @@ function app_render_new_releases() {
 
         $('#app-content').append(myHTML);
     }
-
-    // Rebind Modal Listeners
-    app_modal_rebind_listeners();
 }
 
 
