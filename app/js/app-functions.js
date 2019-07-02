@@ -232,7 +232,7 @@ function app_render_modal_list_add() {
         let selected = '';
         let option = data.catName;
         if (index === 0) { selected = 'selected'}
-        optionHTML += `<option value="${option}" ${selected}>${option}</option>`
+        optionHTML += `<option value="${index}" ${selected}>${option}</option>`
 
     });
     
@@ -254,20 +254,12 @@ function app_render_modal_list_add() {
             </div>
             <div class="modal-content-cell">
                 <div class="modal-list-box">
-                    <p>Mystery Picker</p>
-                </div>
-                <div>
-                    <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
-                </div>
-            </div>
-            <div class="modal-content-cell">
-                <div class="modal-list-box">
-                    <select class="modal-input-select">
+                    <select id="list-choice" class="modal-input-select">
                     ${optionHTML}
                     </select>
                 </div>
                 <div>
-                    <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                    <button id="btn-submit-add-to-list" type="button" class="input-btn modal-input-btn">Add</button>
                 </div>
             </div>
         </div>
@@ -282,6 +274,10 @@ function app_render_modal_list_add() {
             fadeDuration: 200
         }
     );
+
+    $('#btn-submit-add-to-list').click(function() {
+        app_data_item_add_to_list();
+    });
 
     $('#modal-list-add').on($.modal.CLOSE, function(event, modal) {
         $(this).remove();
@@ -403,6 +399,20 @@ function app_data_profile_store_local() {
 // Store Local Data
 function app_data_profile_get_local() {
     appProfile = JSON.parse(localStorage.getItem(appData.appPrefix));
+}
+
+function app_data_item_add_to_list() {
+    
+    // Get input from selected list
+    let inputValue = $('#list-choice').val();
+    let movieID = appData.itemModalStorage.netflixid;
+
+    // Add to list library
+    appProfile.favLibrary[inputValue].catLibrary.push(movieID);
+    console.log(appProfile.favLibrary[inputValue]);
+
+    // Store to local storage
+    app_data_profile_store_local();
 }
 
 
