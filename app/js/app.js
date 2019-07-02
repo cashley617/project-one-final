@@ -24,6 +24,8 @@ const appData = {
 
     newReleaseLibrary: [],
 
+    lastListLibrary: [],
+
     itemModalStorage: {}
 
 }

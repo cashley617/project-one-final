@@ -26,10 +26,49 @@ function app_api_get_new_releases() {
 
         success: function (response) {
             appData.newReleaseLibrary = response.ITEMS;
-            console.log(appData.newReleaseLibrary);
             app_render_new_releases();
         }
 
+    });
+}
+
+function app_api_get_title_info(itemID) {
+
+    $.ajax({
+        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
+        headers: {
+            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
+            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+        },
+
+        success: function (response) {
+            appData.lastListLibrary.push(response.RESULT);
+
+            // Title truncate
+            let itemTitle = response.RESULT.nfinfo.title.slice(0, 2) + "...";
+            let itemRuntime = response.RESULT.nfinfo.runtime;
+            let myHTML = `
+        
+        <div class="card app-content-item">
+            <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
+            <div class="card-body app-content-item-body">
+                <div>
+                    <p>${itemTitle}</p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+            $('#app-content').append(myHTML);
+        }
     });
 }
 
@@ -107,7 +146,7 @@ function app_profile_submit_name() {
         $('#input-field-profile-name').css('border', '2px solid red');
         //$('#app-input-warning').fadeIn('fast');
         return null;
-    }  
+    }
 
     // Data has been validated
     if (inputValue !== '') {
@@ -193,7 +232,7 @@ function app_render_content_header(headerText) {
 
 
 function app_render_modal_category_add() {
-    
+
     let myHTML = `
         <div class="app-modal modal" id="modal-add-category">
             <div class="app-modal-container">
@@ -214,7 +253,7 @@ function app_render_modal_category_add() {
         }
     );
 
-    $('#modal-add-category').on($.modal.CLOSE, function(event, modal) {
+    $('#modal-add-category').on($.modal.CLOSE, function (event, modal) {
         $(this).remove();
     });
 }
@@ -227,15 +266,15 @@ function app_render_modal_list_add() {
     let optionHTML = ``;
 
     // Setup HTML of Dropdown Choices
-    appProfile.favLibrary.forEach(function(data, index) {
-        
+    appProfile.favLibrary.forEach(function (data, index) {
+
         let selected = '';
         let option = data.catName;
-        if (index === 0) { selected = 'selected'}
+        if (index === 0) { selected = 'selected' }
         optionHTML += `<option value="${index}" ${selected}>${option}</option>`
 
     });
-    
+
     let myHTML = `
     <div class="app-modal" id="modal-list-add">
     <div class="app-modal-container-list-add">
@@ -275,11 +314,11 @@ function app_render_modal_list_add() {
         }
     );
 
-    $('#btn-submit-add-to-list').click(function() {
+    $('#btn-submit-add-to-list').click(function () {
         app_data_item_add_to_list();
     });
 
-    $('#modal-list-add').on($.modal.CLOSE, function(event, modal) {
+    $('#modal-list-add').on($.modal.CLOSE, function (event, modal) {
         $(this).remove();
     });
 }
@@ -320,33 +359,19 @@ function app_render_new_releases() {
 
 
 // Render Favorites
-function app_render_favorites() {
+function app_render_favorites(listIndex) {
 
     // Update section header
-    app_render_content_header("Favorites")
+    app_render_content_header("Favorites");
 
-    let myHTML = `
-    <div class="card app-content-item">
-        <img class="card-img-top" src="http://art-2.nflximg.net/63fac/79c52ccb0931cc50f51fd8922ecaef551d263fac.jpg" alt="Card image cap">
-        <div class="card-body app-content-item-body">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <p>Left Side</p>
-                    <p>Left Side</p>
-                </div>
-                <div class="d-flex align-items-center">
-                    <p>Right Side</p>
-                </div>
-            </div>
-        </div>
-    </div>`;
-
+    // Clear original content
     $('#app-content').empty();
-    $('#app-content').append(myHTML);
-    $('#app-content').append(myHTML);
-    $('#app-content').append(myHTML);
-    $('#app-content').append(myHTML);
-    $('#app-content').append(myHTML);
+
+
+    // Loop through and send requests for every item in list
+    appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
+        app_api_get_title_info(data);
+    });
 }
 
 
@@ -359,7 +384,7 @@ function app_render_nav_favorites() {
     appProfile.favLibrary.forEach(function (value, index) {
         let myHTML = `
             <div class="app-nav-box">
-                <p><i class="fas fa-bookmark">&nbsp;</i><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
+                <p><i class="fas fa-bookmark">&nbsp;</i><a href="#" onclick="app_render_favorites(${index})">${appProfile.favLibrary[index].catName}</a></p>
             </div>
             <hr>`;
         $('#app-nav-content').append(myHTML);
@@ -402,7 +427,7 @@ function app_data_profile_get_local() {
 }
 
 function app_data_item_add_to_list() {
-    
+
     // Get input from selected list
     let inputValue = $('#list-choice').val();
     let movieID = appData.itemModalStorage.netflixid;
