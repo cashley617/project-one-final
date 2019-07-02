@@ -402,10 +402,12 @@ function app_render_new_releases(page) {
             break;
     }
 
+    let pageNumber = appData.tempCurrentPage/10+1
+
     let HTML = `
         <div id="pagination" style="color: white; margin-left: 10px;">
             <a href="#" onclick="app_render_new_releases(-1)">Prev 10</a>
-            ----
+            ${pageNumber}
             <a href="#" onclick="app_render_new_releases(1)">Next 10</a>
         </div>`;
 
@@ -490,6 +492,9 @@ function app_render_favorites(listIndex) {
 
     // Update section header
     app_render_content_header("Favorites");
+
+    // Remove pagination
+    $('#pagination').remove();
 
     // Clear original content
     $('#app-content').empty();
@@ -612,7 +617,7 @@ function app_modal_rebind_listeners() {
 
 // Number Clamp
 function math_clamp(val, min, max) {
-    return Math.min(Math.max(min, val), max)
+    return Math.min(Math.max(min, val), max);
 }
 
 // ---- DEBUG ---- //
