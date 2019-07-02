@@ -16,6 +16,24 @@ function call_data() {
 }
 
 
+
+function app_api_get_search_results() {
+    $.ajax({
+        url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
+        headers: {
+            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
+            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+        },
+
+        success: function (response) {
+            appData.lastSearch = response.ITEMS;
+            app_render_search_results();
+        }
+
+    });
+}
+
+
 function app_api_get_new_releases() {
     $.ajax({
         url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
@@ -26,9 +44,54 @@ function app_api_get_new_releases() {
 
         success: function (response) {
             appData.newReleaseLibrary = response.ITEMS;
-            app_render_new_releases();
+            app_render_new_releases(appData.tempCurrentPage);
         }
 
+    });
+}
+
+function app_api_get_title_info(itemID) {
+    $.ajax({
+        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
+        headers: {
+            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
+            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+        },
+
+        success: function (response) {
+
+            console.log(response.RESULT);
+
+            appData.lastListLibrary.push(response.RESULT);
+
+            // Title truncate
+            let itemTitle = response.RESULT.nfinfo.title;
+            if (itemTitle.length > 22) {
+                itemTitle = itemTitle.slice(0, 22) + "...";
+            }
+
+            let itemRuntime = response.RESULT.nfinfo.runtime;
+            let myHTML = `
+                    <div class="card app-content-item">
+                        <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
+                        <div class="card-body app-content-item-body">
+                            <div>
+                                <p>${itemTitle}</p>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            $('#app-content').append(myHTML);
+        }
     });
 }
 
@@ -65,47 +128,6 @@ function app_render_list_cached() {
     });
 }
 
-function app_api_get_title_info(itemID) {
-    $.ajax({
-        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
-        headers: {
-            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
-            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
-        },
-
-        success: function (response) {
-            appData.lastListLibrary.push(response.RESULT);
-
-            // Title truncate
-            let itemTitle = response.RESULT.nfinfo.title;
-            if (itemTitle.length > 22) {
-                itemTitle = itemTitle.slice(0, 22) + "...";
-            }
-
-            let itemRuntime = response.RESULT.nfinfo.runtime;
-            let myHTML = `
-                    <div class="card app-content-item">
-                        <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
-                        <div class="card-body app-content-item-body">
-                            <div>
-                                <p>${itemTitle}</p>
-                            </div>
-
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-
-            $('#app-content').append(myHTML);
-        }
-    });
-}
 
 
 // Initialize App, first run
@@ -318,6 +340,7 @@ function app_render_modal_list_add() {
             <img src="${movieIMG}">
         </div>
         <div class="app-modal-list-add-content">
+        <h6>Select where to add this item...</h6>
             <div class="modal-content-cell">
                 <div class="modal-list-box">
                     <p>Binge Tracker</p>
@@ -351,6 +374,7 @@ function app_render_modal_list_add() {
 
     $('#btn-submit-add-to-list').click(function () {
         app_data_item_add_to_list();
+        $.modal.close();
     });
 
     $('#modal-list-add').on($.modal.CLOSE, function (event, modal) {
@@ -359,7 +383,72 @@ function app_render_modal_list_add() {
 }
 
 // Render New Releases
-function app_render_new_releases() {
+function app_render_new_releases(page) {
+
+    // Add Pagination
+
+    switch (page) {
+        case 1:
+            appData.tempCurrentPage += 10;
+            appData.tempCurrentPage = math_clamp(appData.tempCurrentPage, 0, 60);
+            page = appData.tempCurrentPage;
+            console.log(page);
+            break;
+
+        case -1:
+            appData.tempCurrentPage -= 10;
+            appData.tempCurrentPage = math_clamp(appData.tempCurrentPage, 0, 100);
+            page = appData.tempCurrentPage;
+            break;
+    }
+
+    let HTML = `
+        <div id="pagination" style="color: white; margin-left: 10px;">
+            <a href="#" onclick="app_render_new_releases(-1)">Prev 10</a>
+            ----
+            <a href="#" onclick="app_render_new_releases(1)">Next 10</a>
+        </div>`;
+
+    $('#pagination').remove();
+    $('#app-content-header').after(HTML);
+
+
+    $('#app-content').empty();
+
+    for (let i = 0 + page; i < 10 + page; i++) {
+
+        // Title truncate
+        let itemTitle = appData.newReleaseLibrary[i].title;
+        if (itemTitle.length > 22) {
+            itemTitle = itemTitle.slice(0, 22) + "...";
+        }
+        let itemRuntime = appData.newReleaseLibrary[i].runtime;
+        let myHTML = `
+        <div class="card app-content-item">
+            <img class="card-img-top loading" src="${appData.newReleaseLibrary[i].image}" alt="Card image cap">
+            <div class="card-body app-content-item-body">
+            
+                <div>
+                    <p>${itemTitle}</p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <p><a href="#" onclick="app_list_display_add_item(${i})"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $('#app-content').append(myHTML);
+    }
+}
+
+
+function app_render_search_results() {
 
     $('#app-content').empty();
 
@@ -395,7 +484,6 @@ function app_render_new_releases() {
         $('#app-content').append(myHTML);
     }
 }
-
 
 // Render Favorites
 function app_render_favorites(listIndex) {
@@ -519,6 +607,14 @@ function app_modal_rebind_listeners() {
         });
     });
 }
+
+// --- General Utilities --- //
+
+// Number Clamp
+function math_clamp(val, min, max) {
+    return Math.min(Math.max(min, val), max)
+}
+
 // ---- DEBUG ---- //
 
 
@@ -528,3 +624,5 @@ function app_debug_clear_data() {
     localStorage.removeItem(appData.appPrefix);
     location.reload();
 }
+
+

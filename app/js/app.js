@@ -9,6 +9,7 @@ const appData = {
 
     // Temporary data storage for profile creation
     tempProfileSelected: 0,
+    tempCurrentPage: 0,
 
     // Flag if list needs updated
     listNeedsUpdate: true,
