@@ -527,7 +527,14 @@ function app_render_favorites(listIndex) {
 
     // Display No items
     if (appProfile.favLibrary[listIndex].catLibrary.length === 0) {
-        $('#app-content').text("Sorry! Nothing in this list!");
+
+        let catName = appProfile.favLibrary[listIndex].catName;
+        let myHTML = `
+        <div class="alert alert-info w-100" role="alert">
+            <P><i class="fas fa-exclamation-circle">&nbsp;</i>Oops! <b>${catName}</b> list is empty!</p>
+        </div>
+        `;
+        $('#app-content').append(myHTML);
     }
 }
 
