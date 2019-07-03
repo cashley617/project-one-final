@@ -26,6 +26,7 @@ const appData = {
         'profile_6.png',
     ],
 
+    searchLibrary: [],
     newReleaseLibrary: [],
     lastListLibrary: [],
     itemModalStorage: {}

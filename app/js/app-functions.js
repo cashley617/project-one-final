@@ -16,24 +16,29 @@ function call_data() {
 }
 
 
+// --- Search Results
+function app_api_get_search_results(inputField) {
 
-function app_api_get_search_results() {
+
+    // Get Input
+    let inputValue = inputField.val();
+
     $.ajax({
-        url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
+        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=${inputValue}-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=all&st=adv&ob=Relevance&p=1&sa=and`,
         headers: {
             'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
             'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
         },
 
         success: function (response) {
-            appData.lastSearch = response.ITEMS;
+            appData.searchLibrary = response.ITEMS;
             app_render_search_results();
         }
 
     });
 }
 
-
+// --- New Releases
 function app_api_get_new_releases() {
     $.ajax({
         url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
@@ -174,11 +179,12 @@ function app_initialize() {
         $('#app-stage-profile').fadeIn('slow');
 
         // Setup Enter for input field
-        $("#input-field-profile-name").keyup(function(event) {
+        $("#input-field-profile-name").keyup(function (event) {
             if (event.keyCode === 13) {
                 $("#btn-submit-profile").click();
             }
         });
+
     }
 
     // Profile Found. Load Data
@@ -196,6 +202,13 @@ function app_initialize() {
         // Staging Logo: Hide from dom
         $('#app-stage-logo').remove();
         $('#app-stage-content').fadeIn('fast');
+
+        // Setup Enter for input field
+        $("#input-field-search").keyup(function (event) {
+            if (event.keyCode === 13) {
+                app_api_get_search_results($(this));
+            }
+        });
     }
 }
 
@@ -321,7 +334,7 @@ function app_render_modal_category_add() {
     });
 
     // Add enter key detection for input field
-    $("#input-field-category-name").keyup(function(event) {
+    $("#input-field-category-name").keyup(function (event) {
         if (event.keyCode === 13) {
             $("#btn-add-category").click();
         }
@@ -415,7 +428,7 @@ function app_render_new_releases(page) {
             break;
     }
 
-    let pageNumber = appData.tempCurrentPage/10+1
+    let pageNumber = appData.tempCurrentPage / 10 + 1
 
     let HTML = `
         <div id="pagination" style="color: white; margin-left: 10px;">
@@ -465,20 +478,20 @@ function app_render_new_releases(page) {
 
 function app_render_search_results() {
 
-    $('#app-content').empty();
+    app_render_content_header("Search results");
 
-    console.log(appData.newReleaseLibrary)
+    $('#app-content').empty();
     for (let i = 0; i < 8; i++) {
 
         // Title truncate
-        let itemTitle = appData.newReleaseLibrary[i].title;
+        let itemTitle = appData.searchLibrary[i].title;
         if (itemTitle.length > 22) {
             itemTitle = itemTitle.slice(0, 22) + "...";
         }
-        let itemRuntime = appData.newReleaseLibrary[i].runtime;
+        let itemRuntime = appData.searchLibrary[i].runtime;
         let myHTML = `
         <div class="card app-content-item">
-            <img class="card-img-top loading" src="${appData.newReleaseLibrary[i].image}" alt="Card image cap">
+            <img class="card-img-top loading" src="${appData.searchLibrary[i].image}" alt="Card image cap">
             <div class="card-body app-content-item-body">
             
                 <div>
