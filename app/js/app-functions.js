@@ -303,8 +303,7 @@ function app_render_modal_category_add() {
                 <h1>Add New Category</h1>
                 <input type="text" id="input-field-category-name" class="input-category-name" placeholder="Ex: Christmas Movies"
                     onfocus="this.placeholder = ''" onblur="this.placeholder = 'Ex: Christmas Movies'">
-                <button onclick="app_category_add_new()" type="button" class="input-btn">Create Category</button>
-                <a href="#" onclick="app_category_add_new()" rel="modal:close">Close This</a>
+                <button id="btn-add-category" onclick="app_category_add_new()" type="button" class="input-btn">Create Category</button>
             </div>
         </div>`;
 
@@ -319,6 +318,13 @@ function app_render_modal_category_add() {
 
     $('#modal-add-category').on($.modal.CLOSE, function (event, modal) {
         $(this).remove();
+    });
+
+    // Add enter key detection for input field
+    $("#input-field-category-name").keyup(function(event) {
+        if (event.keyCode === 13) {
+            $("#btn-add-category").click();
+        }
     });
 }
 

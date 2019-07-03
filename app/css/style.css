@@ -252,7 +252,7 @@ p {
     color: #282828;
 }
 
-.input-profile-name:focus {
+.input-profile-name:focus, .input-category-name {
     outline: none;
 }
 
