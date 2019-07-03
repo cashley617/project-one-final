@@ -172,6 +172,13 @@ function app_initialize() {
 
         // Profile Name: Form render. Start of profile creation staging.
         $('#app-stage-profile').fadeIn('slow');
+
+        // Setup Enter for input field
+        $("#input-field-profile-name").keyup(function(event) {
+            if (event.keyCode === 13) {
+                $("#btn-submit-profile").click();
+            }
+        });
     }
 
     // Profile Found. Load Data
@@ -541,7 +548,7 @@ function app_render_nav_add_append() {
     let index = appProfile.favLibrary.length - 1;
     let myHTML = `
         <div class="app-nav-box animate-puff-in">
-            <p><i class="fas fa-bookmark">&nbsp;</i><a href="#" onclick="app_render_favorites()">${appProfile.favLibrary[index].catName}</a></p>
+            <p><i class="fas fa-bookmark">&nbsp;</i><a href="#" onclick="app_render_favorites(${index})">${appProfile.favLibrary[index].catName}</a></p>
         </div>
         <hr>`;
     $('#app-nav-content').append(myHTML);
