@@ -411,14 +411,12 @@ function app_render_modal_list_add() {
 // Render New Releases
 function app_render_new_releases(page) {
 
-    // Add Pagination
-
+    // Add pagination to list
     switch (page) {
         case 1:
             appData.tempCurrentPage += 10;
             appData.tempCurrentPage = math_clamp(appData.tempCurrentPage, 0, 60);
             page = appData.tempCurrentPage;
-            console.log(page);
             break;
 
         case -1:
@@ -430,14 +428,15 @@ function app_render_new_releases(page) {
 
     let pageNumber = appData.tempCurrentPage / 10 + 1
 
+    //        <li class="page-item"><a class="page-link" href="#">1</a></li>
     let HTML = `
-        <div id="pagination" style="color: white; margin-left: 10px;">
-            <a href="#" onclick="app_render_new_releases(-1)">Prev 10</a>
-            ${pageNumber}
-            <a href="#" onclick="app_render_new_releases(1)">Next 10</a>
-        </div>`;
+    <ul class="pagination justify-content-end">
+        <li class="page-item"><span class="page-link">Page: ${pageNumber}</span></li>
+        <li class="page-item"><a class="page-link" onclick="app_render_new_releases(-1)" href="#">Previous</a></li>
+        <li class="page-item"><a class="page-link" onclick="app_render_new_releases(1)"href="#">Next</a></li>
+    </ul>`;
 
-    $('#pagination').remove();
+    $('.pagination').remove();
     $('#app-content-header').after(HTML);
 
 

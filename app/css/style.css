@@ -41,6 +41,9 @@ p {
     max-width: 200px;
 }
 
+
+/* BOOTSTRAP MODIFICATIONS */
+
 /* --- Wrapper --- */
 
 .app-wrapper {
@@ -51,7 +54,6 @@ p {
     min-height: 100%;
 }
 
-/* Debug Styings */
 
 /* --- Containers --- */
 
@@ -123,12 +125,6 @@ p {
 
 /* --- App Content --- */
 
-.loading {
-    width: 100%;
-    background-color: #282828;
-    background: url('../../../app/imgs/loading_icons/loading_spinner.gif') center no-repeat;
-}
-
 .btn-add-fav {
     font-size: 24px;
     color: var(--c-orange);
@@ -149,7 +145,7 @@ p {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: space-between;
 }
 
 
@@ -157,7 +153,6 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 200px;
     height: 36px;
     background-color: #40464b;
     color: var(--c-orange);
@@ -168,8 +163,9 @@ p {
 
 .app-content-item {
     width: 190px;
-    margin: 0 15px 15px 0;
+    margin: 0 0 15px 0;
     border: 1px solid #353d43;
+    background: url('../../../app/imgs/loading_icons/loading_spinner.gif') center no-repeat;
 }
 
 .app-content-item-body {
