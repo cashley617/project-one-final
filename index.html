@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="container-form">
-                    <input id="input-field-search" class="input-form-search" placeholder="Search Netflix..." aria-label="Search Netflix">
+                    <input id="input-field-search" class="input-form-search" placeholder="Search Netflix..." aria-label="Search Netflix" autocomplete="off">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                 </div>
 
                 <!-- Content Column -->
-                <div class="w-100 pl-3">
+                <div class="w-100 pl-2">
                     <div id="app-content-header" class="app-content-header">New Releases</div>
                     <div id="app-content" class="app-content-right pl-2">
                         <div>
@@ -133,7 +133,11 @@
 
         <!-- End of Wrapper  -->
     </div>
+
+
     <!-- Core App JS -->
+    <script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-firestore.js"></script>
     <script src="app/js/app-functions.js"></script>
     <script src="app/js/app.js"></script>
 </body>

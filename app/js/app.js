@@ -1,18 +1,38 @@
 /// --- Core Application --- ///
 
+
+// Get URL parameters
+let urlParamCheck = window.location.search.substr(1);
+
+if (urlParamCheck.length === 9) {
+    console.log('Valid ID');
+}
+
+// Generate ID
+
 // Preload Gif
 var loadGif = new Image();
 loadGif.src = 'app/imgs/loading_icons/loading_spinner.gif';
 
+
+// Create remote database object
+const warpPipe = {
+
+}
+
 // App Data Object
 const appData = {
 
-    // Break up API key to hide from repo-sniffing bot assholes
+    // Break up API keys to hide from repo-sniffing bot assholes 
+    xalpha: ['AIzaSy', 'CHl21q', 'CCyGRvGL', 'Gyr0bXu_', 'uGT', '9fBnuAOU'],
     zalpha: ['4d121bd', '4f5', 'mshafce', '35864f', '40836p1d8', '96cjsn', '949371', '756abd'],
 
     // Temporary data storage for profile creation
     tempProfileSelected: 0,
     tempCurrentPage: 0,
+
+    // Tracker user movement
+    userActionLast: '',
 
     // Flag if list needs updated
     listNeedsUpdate: true,
@@ -54,6 +74,21 @@ let appProfile = {
         { catName: 'My Favorites', catLibrary: [] },
     ]
 }
+
+// Firebase
+var firebaseConfig = {
+    apiKey: appData.xalpha.join(''),
+    authDomain: "favflix-listshare.firebaseapp.com",
+    databaseURL: "https://favflix-listshare.firebaseio.com",
+    projectId: "favflix-listshare",
+    storageBucket: "favflix-listshare.appspot.com",
+    messagingSenderId: "920529453150",
+    appId: "1:920529453150:web:1ca57367b9a73b7f"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // Document Ready
 $(document).ready(function () {

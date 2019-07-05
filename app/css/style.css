@@ -54,7 +54,9 @@ p {
     min-height: 100%;
 }
 
-
+.loading {
+    width: 100%;
+}
 /* --- Containers --- */
 
 .app-letterbox-top {

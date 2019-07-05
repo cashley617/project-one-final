@@ -1,31 +1,67 @@
 /// --- Core App Functions --- ///
 
 
+// ------ Site Utilitie -------/
 
-// --- Search Results
+function firestore_push_list() {
+    db.collection('userlists').doc('deee').set({
+        items: appProfile.favLibrary[0].catLibrary
+    });
+}
+
+// API: Search Results
 function app_api_get_search_results(inputField) {
-
 
     // Get Input
     let inputValue = inputField.val();
 
+    // Early Exit if not valid
+    if (inputValue === '') {
+
+        // No valid input found
+        $('.container-form').css('border-width', '2px');
+        $('.container-form').css('border-color', 'red');
+        $('#input-field-search').attr('placeholder', 'Please enter something...');
+
+        // Early Exit
+        return null;
+    }
+
+
+    // Set User Action
+    appData.userActionLast = 'search';
+
+    // Data: Get request
     $.ajax({
-        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=${inputValue}-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=all&st=adv&ob=Relevance&p=1&sa=and`,
+        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=${inputValue}-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=78&st=adv&ob=Relevance&p=1&sa=and`,
         headers: {
             'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
             'X-RapidAPI-Key': appData.zalpha.join('')
         },
 
         success: function (response) {
-            appData.searchLibrary = response.ITEMS;
-            app_render_search_results();
+
+            // Content Found
+            if (response.COUNT > 0) {
+                appData.searchLibrary = response.ITEMS;
+                app_render_search_results();
+            }
+
+            // No Content Found
+            if (response.COUNT === 0) {
+                // YO! AINT NO CONTENT IN DIS BISH!
+            }
         }
 
     });
 }
 
-// --- New Releases
+// API: New Releases
 function app_api_get_new_releases() {
+
+    // Set User Action
+    appData.userActionLast = 'new';
+
     $.ajax({
         url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
         headers: {
@@ -41,6 +77,7 @@ function app_api_get_new_releases() {
     });
 }
 
+// API: Single Title Info
 function app_api_get_title_info(itemID) {
     $.ajax({
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
@@ -86,44 +123,11 @@ function app_api_get_title_info(itemID) {
     });
 }
 
-function app_render_list_cached() {
-
-    appData.lastListLibrary.forEach(function (data, index) {
-
-        // Title truncate
-        let itemTitle = data.nfinfo.title;
-        if (itemTitle.length > 22) {
-            itemTitle = itemTitle.slice(0, 22) + "...";
-        }
-        let itemRuntime = data.nfinfo.runtime;
-        let myHTML = `
-            <div class="card app-content-item">
-                <img class="card-img-top loading" src="${data.nfinfo.image1}" alt="Card image cap">
-                <div class="card-body app-content-item-body">
-                    <div>
-                        <p>${itemTitle}</p>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
-                        </div>
-                        
-                        <div class="d-flex align-items-center">
-                            <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-        </div>`;
-        $('#app-content').append(myHTML);
-    });
-}
-
 function app_list_remove_item(itemIndex) {
     // Remove indexItem from array
 }
 
-// Initialize App, first run
+// Initialize App: First run
 function app_initialize() {
 
     // Check local storage
@@ -200,8 +204,7 @@ function app_initialize() {
     }
 }
 
-
-// Profile Name: Validate input, store and update profile name.
+// Profile Name Stage: Validate input, store and update profile name.
 function app_profile_submit_name() {
 
     // Validate w/ early exit
@@ -218,7 +221,7 @@ function app_profile_submit_name() {
 
         // Save profile profile name and generate unique ID
         appProfile.profileName = inputValue;
-        appProfile.profileID = Math.random().toString(36).substr(2, 9);
+        appProfile.profileID = inputValue + Math.random().toString(36).substr(2, 9);
 
         // Save to local storage
         app_data_profile_store_local();
@@ -234,6 +237,20 @@ function app_profile_submit_name() {
         });
 
     }
+}
+
+// Player Icon: Submit change
+function app_profile_submit_icon() {
+
+    appProfile.profileIcon = appData.tempProfileSelected;
+    app_render_profile_icon();
+    app_data_profile_store_local();
+
+    // Fade out and trigger next stage
+    $('#app-stage-logo').fadeOut('fast');
+    $('#app-stage-profile-icon').fadeOut('fast', function () {
+        $('#app-stage-content').fadeIn('fast');
+    });
 }
 
 // Add new category
@@ -267,35 +284,70 @@ function app_category_add_new() {
     }
 }
 
-// Player Icon: Submit change
-function app_profile_submit_icon() {
+// Add item to app list
+function app_data_item_add_to_list() {
 
-    appProfile.profileIcon = appData.tempProfileSelected;
-    app_render_profile_icon();
+    // Get input from selected list
+    let inputValue = $('#list-choice').val();
+    let movieID = appData.itemModalStorage.netflixid;
+
+    // Add to list library
+    appProfile.favLibrary[inputValue].catLibrary.push(movieID);
+
+    // Store to local storage
     app_data_profile_store_local();
 
-    // Fade out and trigger next stage
-    $('#app-stage-logo').fadeOut('fast');
-    $('#app-stage-profile-icon').fadeOut('fast', function () {
-        $('#app-stage-content').fadeIn('fast');
+    // Flag list update tracker
+    appData.listNeedsUpdate = true;
+}
+
+// ------ Render Functions ------ //
+
+// Render favorites list, cached. (NO API PULL)
+function app_render_list_cached() {
+
+    appData.lastListLibrary.forEach(function (data, index) {
+
+        // Title truncate
+        let itemTitle = data.nfinfo.title;
+        if (itemTitle.length > 22) {
+            itemTitle = itemTitle.slice(0, 22) + "...";
+        }
+        let itemRuntime = data.nfinfo.runtime;
+        let myHTML = `
+            <div class="card app-content-item">
+                <img class="card-img-top loading" src="${data.nfinfo.image1}" alt="Card image cap">
+                <div class="card-body app-content-item-body">
+                    <div>
+                        <p>${itemTitle}</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
+                        </div>
+                    </div>
+                </div>
+        </div>`;
+        $('#app-content').append(myHTML);
     });
 }
 
-// Store selected item into local object
-function app_list_display_add_item(item) {
-    appData.itemModalStorage = appData.newReleaseLibrary[item];
-    app_render_modal_list_add();
+// Render: Generatoe Loading
+function app_render_content_loading() {
+
 }
 
-
-// ------ Render Utilities ------ //
-
-// Update Content Header
+// Render: Breadcrumb page header
 function app_render_content_header(headerText) {
     $('#app-content-header').text(headerText);
 }
 
-
+// Render: Add new category to favorites list
 function app_render_modal_category_add() {
 
     let myHTML = `
@@ -329,6 +381,7 @@ function app_render_modal_category_add() {
     });
 }
 
+// Render: Modal Add move to list
 function app_render_modal_list_add() {
 
     // Get item information from storage
@@ -396,6 +449,40 @@ function app_render_modal_list_add() {
     });
 }
 
+function app_render_modal_share_link(listIndex) {
+
+    // FireStore
+    // Create list ID:
+    let listID = Math.random().toString(36).substr(2, 9);
+
+    db.collection('userlists').doc(listID).set({
+        items: appProfile.favLibrary[listIndex].catLibrary
+    });
+
+    // Setup Url
+    let profileURL = `https://${window.location.hostname}/${listID}`;
+    let myHTML = `
+        <div class="app-modal text-center text-light" id="modal-share-link">
+        <div class="mt-5">
+            <h4>${profileURL}</h4>
+        </div>
+        </div>`;
+
+    $('body').append(myHTML);
+    $('#modal-share-link').modal(
+        {
+            showClose: true,
+            clickClose: true,
+            fadeDuration: 200
+        }
+    );
+
+    $('#modal-share-link').on($.modal.CLOSE, function (event, modal) {
+        $(this).remove();
+    });
+}
+
+
 // Render New Releases
 function app_render_new_releases(page) {
 
@@ -438,7 +525,7 @@ function app_render_new_releases(page) {
             itemTitle = itemTitle.slice(0, 22) + "...";
         }
 
-        let itemImage   = appData.newReleaseLibrary[i].image;
+        let itemImage = appData.newReleaseLibrary[i].image;
         let itemRuntime = appData.newReleaseLibrary[i].runtime;
         let myHTML = `
         <div class="card app-content-item">
@@ -464,13 +551,13 @@ function app_render_new_releases(page) {
     }
 }
 
-
+// Render: Search Results
 function app_render_search_results() {
 
     app_render_content_header("Search results");
 
     $('#app-content').empty();
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < appData.searchLibrary.length; i++) {
 
         // Title truncate
         let itemTitle = appData.searchLibrary[i].title;
@@ -508,15 +595,20 @@ function app_render_favorites(listIndex) {
     // Update section header
     app_render_content_header("Favorites");
 
-
     // Remove pagination
     $('.pagination').remove();
 
     // Clear original content
     $('#app-content').empty();
 
+
     // Display items from list if there are any
     if (appProfile.favLibrary[listIndex].catLibrary.length > 0) {
+
+        // Render share link
+        let shareLink = `<a class="btn btn-primary text-light mb-3 ml-2" href="#" role="button" onclick="app_render_modal_share_link(${listIndex})"><i class="fas fa-share-alt-square">&nbsp;</i>Share this list!</a>`
+        $('#app-content-header').after(shareLink); 2
+
         // Check if list needs update
         if (appData.listNeedsUpdate) {
             appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
@@ -540,7 +632,6 @@ function app_render_favorites(listIndex) {
         $('#app-content').append(myHTML);
     }
 }
-
 
 // Render Favorites Categories
 function app_render_nav_favorites() {
@@ -580,35 +671,34 @@ function app_render_profile_icon() {
     $('#app-welcome-img').attr('src', 'app/imgs/profile_icons/' + appData.iconLibrary[appProfile.profileIcon]);
 }
 
-
 // --- Data Management --- //
+
+// Store selected item into local object
+function app_list_display_add_item(item) {
+
+    switch (appData.userActionLast) {
+
+        case 'new':
+            appData.itemModalStorage = appData.newReleaseLibrary[item];
+            break;
+
+        case 'search':
+            appData.itemModalStorage = appData.searchLibrary[item];
+            break;
+    }
+
+    app_render_modal_list_add();
+}
 
 // Store Local Data
 function app_data_profile_store_local() {
     localStorage.setItem(appData.appPrefix, JSON.stringify(appProfile));
 }
 
-// Store Local Data
+// Get Local Data
 function app_data_profile_get_local() {
     appProfile = JSON.parse(localStorage.getItem(appData.appPrefix));
 }
-
-function app_data_item_add_to_list() {
-
-    // Get input from selected list
-    let inputValue = $('#list-choice').val();
-    let movieID = appData.itemModalStorage.netflixid;
-
-    // Add to list library
-    appProfile.favLibrary[inputValue].catLibrary.push(movieID);
-
-    // Store to local storage
-    app_data_profile_store_local();
-
-    // Flag list update tracker
-    appData.listNeedsUpdate = true;
-}
-
 
 // --- Modal ---- //
 function app_modal_rebind_listeners() {
@@ -644,7 +734,6 @@ function math_clamp(val, min, max) {
 }
 
 // ---- DEBUG ---- //
-
 
 function app_debug_clear_data() {
 
