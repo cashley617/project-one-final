@@ -7,6 +7,9 @@ loadGif.src = 'app/imgs/loading_icons/loading_spinner.gif';
 // App Data Object
 const appData = {
 
+    // Break up API key to hide from repo-sniffing bot assholes
+    zalpha: ['4d121bd', '4f5', 'mshafce', '35864f', '40836p1d8', '96cjsn', '949371', '756abd'],
+
     // Temporary data storage for profile creation
     tempProfileSelected: 0,
     tempCurrentPage: 0,

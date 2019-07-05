@@ -146,8 +146,13 @@ p {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    
 }
 
+.app-content-right::after {
+    content: "";
+    padding-left: 422px;
+}
 
 .app-content-header {
     display: flex;

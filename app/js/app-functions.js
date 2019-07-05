@@ -1,19 +1,5 @@
 /// --- Core App Functions --- ///
 
-// TEMPORARY AJAX REFERENCE
-function call_data() {
-    $.ajax({
-        url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get%3Anew7-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=all&st=adv&ob=Relevance&p=1&sa=and",
-        headers: {
-            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
-            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
-        },
-
-        success: function (response) {
-            console.log(response);
-        }
-    });
-}
 
 
 // --- Search Results
@@ -27,7 +13,7 @@ function app_api_get_search_results(inputField) {
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=${inputValue}-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=all&st=adv&ob=Relevance&p=1&sa=and`,
         headers: {
             'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
-            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+            'X-RapidAPI-Key': appData.zalpha.join('')
         },
 
         success: function (response) {
@@ -44,7 +30,7 @@ function app_api_get_new_releases() {
         url: "https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=get:new7:US&p=1&t=ns&st=adv",
         headers: {
             'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
-            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+            'X-RapidAPI-Key': appData.zalpha.join('')
         },
 
         success: function (response) {
@@ -60,7 +46,7 @@ function app_api_get_title_info(itemID) {
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
         headers: {
             'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
-            'X-RapidAPI-Key': '4d121bd4f5mshafce35864f40836p1d896cjsn949371756abd'
+            'X-RapidAPI-Key': appData.zalpha.join('')
         },
 
         success: function (response) {
@@ -89,7 +75,7 @@ function app_api_get_title_info(itemID) {
                                     <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
                                 </div>
                                 <div class="d-flex align-items-center">
-                                    <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                                    <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
                             </div>
                         </div>
                     </div>
@@ -124,7 +110,7 @@ function app_render_list_cached() {
                         </div>
                         
                         <div class="d-flex align-items-center">
-                            <p><a href="#" onclick="app_list_display_add_item()"><i class="fas fa-plus-circle btn-add-fav"></i></a></p>
+                            <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
                         </div>
                     </div>
                 </div>
@@ -133,7 +119,9 @@ function app_render_list_cached() {
     });
 }
 
-
+function app_list_remove_item(itemIndex) {
+    // Remove indexItem from array
+}
 
 // Initialize App, first run
 function app_initialize() {
@@ -430,7 +418,7 @@ function app_render_new_releases(page) {
 
     //        <li class="page-item"><a class="page-link" href="#">1</a></li>
     let HTML = `
-    <ul class="pagination justify-content-end">
+    <ul class="pagination pl-2">
         <li class="page-item"><span class="page-link">Page: ${pageNumber}</span></li>
         <li class="page-item"><a class="page-link" onclick="app_render_new_releases(-1)" href="#">Previous</a></li>
         <li class="page-item"><a class="page-link" onclick="app_render_new_releases(1)"href="#">Next</a></li>
@@ -449,10 +437,12 @@ function app_render_new_releases(page) {
         if (itemTitle.length > 22) {
             itemTitle = itemTitle.slice(0, 22) + "...";
         }
+
+        let itemImage   = appData.newReleaseLibrary[i].image;
         let itemRuntime = appData.newReleaseLibrary[i].runtime;
         let myHTML = `
         <div class="card app-content-item">
-            <img class="card-img-top loading" src="${appData.newReleaseLibrary[i].image}" alt="Card image cap">
+            <img class="card-img-top loading" src="${itemImage}" alt="Card image cap">
             <div class="card-body app-content-item-body">
             
                 <div>
@@ -518,8 +508,9 @@ function app_render_favorites(listIndex) {
     // Update section header
     app_render_content_header("Favorites");
 
+
     // Remove pagination
-    $('#pagination').remove();
+    $('.pagination').remove();
 
     // Clear original content
     $('#app-content').empty();
