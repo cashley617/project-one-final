@@ -4,21 +4,9 @@
 // Get URL parameters
 let urlParamCheck = window.location.search.substr(1);
 
-if (urlParamCheck.length === 9) {
-    console.log('Valid ID');
-}
-
-// Generate ID
-
 // Preload Gif
 var loadGif = new Image();
 loadGif.src = 'app/imgs/loading_icons/loading_spinner.gif';
-
-
-// Create remote database object
-const warpPipe = {
-
-}
 
 // App Data Object
 const appData = {
@@ -92,10 +80,24 @@ const db = firebase.firestore();
 
 // Document Ready
 $(document).ready(function () {
+
+    // Initialize core app
     app_initialize();
 
+    // Bind listeners for favorites button (This needs moved)
     app_modal_rebind_listeners();
 
-    // Get New Releases
-    app_api_get_new_releases();
+
+    // Check if viewing shared list or front page
+    if (urlParamCheck.length === 9) {
+
+        // Firestore
+        db.collection('userlists').doc(urlParamCheck).get().then(function(data) {
+            app_render_shared_link(data.data().items);
+        });
+
+    } else {
+        // Get New Releases
+        app_api_get_new_releases();
+    }
 });

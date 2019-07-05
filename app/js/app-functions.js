@@ -3,12 +3,6 @@
 
 // ------ Site Utilitie -------/
 
-function firestore_push_list() {
-    db.collection('userlists').doc('deee').set({
-        items: appProfile.favLibrary[0].catLibrary
-    });
-}
-
 // API: Search Results
 function app_api_get_search_results(inputField) {
 
@@ -88,8 +82,6 @@ function app_api_get_title_info(itemID) {
 
         success: function (response) {
 
-            console.log(response.RESULT);
-
             appData.lastListLibrary.push(response.RESULT);
 
             // Title truncate
@@ -123,6 +115,46 @@ function app_api_get_title_info(itemID) {
     });
 }
 
+// API: Shared Link Info
+function app_api_get_shared_link_info(itemID) {
+    $.ajax({
+        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
+        headers: {
+            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
+            'X-RapidAPI-Key': appData.zalpha.join('')
+        },
+
+        success: function (response) {
+
+            appData.lastListLibrary.push(response.RESULT);
+
+            // Title truncate
+            let itemTitle = response.RESULT.nfinfo.title;
+            if (itemTitle.length > 22) {
+                itemTitle = itemTitle.slice(0, 22) + "...";
+            }
+
+            let itemRuntime = response.RESULT.nfinfo.runtime;
+            let myHTML = `
+                    <div class="card app-content-item">
+                        <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
+                        <div class="card-body app-content-item-body">
+                            <div>
+                                <p>${itemTitle}</p>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                                </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            $('#app-content').append(myHTML);
+        }
+    });
+}
 function app_list_remove_item(itemIndex) {
     // Remove indexItem from array
 }
@@ -301,6 +333,17 @@ function app_data_item_add_to_list() {
     appData.listNeedsUpdate = true;
 }
 
+function copy_shared_link() {
+
+    let temp = $("<input>");
+    $("body").append(temp);
+    urlValue = $('#share-href-field').val()
+    temp.val(urlValue).select();
+    console.log(temp.val());
+    document.execCommand("copy");
+    temp.remove();
+}
+
 // ------ Render Functions ------ //
 
 // Render favorites list, cached. (NO API PULL)
@@ -460,12 +503,16 @@ function app_render_modal_share_link(listIndex) {
     });
 
     // Setup Url
-    let profileURL = `https://${window.location.hostname}/${listID}`;
+    let shareURL = `https://${window.location.hostname}/${listID}`;
     let myHTML = `
-        <div class="app-modal text-center text-light" id="modal-share-link">
-        <div class="mt-5">
-            <h4>${profileURL}</h4>
-        </div>
+        <div class="app-modal text-light h-auto" id="modal-share-link">
+            <h4 class="text-center">Share this address</h4>
+            <div class="input-group mb-3 d-flex align-items-center">
+                <input type="text" id="share-href-field" class="form-control font-weight-bold" placeholder="" value="${shareURL}" disabled>
+                <div class="input-group-prepend">
+                    <button class="btn btn-dark" type="button" onclick="copy_shared_link()">Copy</button>
+                </div>
+            </div>
         </div>`;
 
     $('body').append(myHTML);
@@ -485,6 +532,7 @@ function app_render_modal_share_link(listIndex) {
 
 // Render New Releases
 function app_render_new_releases(page) {
+
 
     // Add pagination to list
     switch (page) {
@@ -551,6 +599,8 @@ function app_render_new_releases(page) {
     }
 }
 
+
+
 // Render: Search Results
 function app_render_search_results() {
 
@@ -589,6 +639,7 @@ function app_render_search_results() {
     }
 }
 
+
 // Render Favorites
 function app_render_favorites(listIndex) {
 
@@ -606,7 +657,8 @@ function app_render_favorites(listIndex) {
     if (appProfile.favLibrary[listIndex].catLibrary.length > 0) {
 
         // Render share link
-        let shareLink = `<a class="btn btn-primary text-light mb-3 ml-2" href="#" role="button" onclick="app_render_modal_share_link(${listIndex})"><i class="fas fa-share-alt-square">&nbsp;</i>Share this list!</a>`
+        let shareLink = `<a id="share-href" class="btn btn-primary text-light mb-3 ml-2" href="#" role="button" onclick="app_render_modal_share_link(${listIndex})"><i class="fas fa-share-alt-square">&nbsp;</i>Share this list!</a>`
+        $("#share-href").remove();
         $('#app-content-header').after(shareLink); 2
 
         // Check if list needs update
@@ -622,6 +674,44 @@ function app_render_favorites(listIndex) {
 
     // Display No items
     if (appProfile.favLibrary[listIndex].catLibrary.length === 0) {
+
+        let catName = appProfile.favLibrary[listIndex].catName;
+        let myHTML = `
+        <div class="alert alert-info w-100" role="alert">
+            <P><i class="fas fa-exclamation-circle">&nbsp;</i>Oops! <b>${catName}</b> list is empty!</p>
+        </div>
+        `;
+        $('#app-content').append(myHTML);
+    }
+}
+
+// Render Shared Link
+function app_render_shared_link(listArray) {
+
+    // SUPER HACK
+    $('.app-content-left').hide();
+    $('.app-container-profile-welcome').hide();
+    $('.container-form').hide();
+
+    // Update section header
+    app_render_content_header("Shared Link");
+
+    // Remove pagination
+    $('.pagination').remove();
+
+    // Clear original content
+    $('#app-content').empty();
+
+
+    // Display items from list if there are any
+    if (listArray.length > 0) {
+        listArray.forEach(function (data, index) {
+            app_api_get_shared_link_info(data);
+        });
+    }
+
+    // Display No items
+    if (listArray === 0) {
 
         let catName = appProfile.favLibrary[listIndex].catName;
         let myHTML = `
