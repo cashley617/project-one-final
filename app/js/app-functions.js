@@ -816,7 +816,6 @@ function app_render_binge() {
 // Render Favorites
 function app_render_favorites(listIndex) {
 
-
     // Update section header
     app_render_content_header("Favorites");
 
@@ -836,14 +835,10 @@ function app_render_favorites(listIndex) {
         $('#app-content-header').after(shareLink); 2
 
         // Check if list needs update
-        if (appData.listNeedsUpdate) {
-            appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
-                app_api_get_title_info(data, listIndex, index);
-            });
-            appData.listNeedsUpdate = false;
-        } else {
-            app_render_list_cached();
-        }
+        appData.lastListLibrary = [];
+        appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
+            app_api_get_title_info(data, listIndex, index);
+        });
     }
 
     // Display No items

@@ -80,7 +80,7 @@ const db = firebase.firestore();
 // Document Ready
 $(document).ready(function () {
 
-    if (urlParamCheck === 'FRESHSTART') {
+    if (urlParamCheck === 'flush') {
         localStorage.removeItem(appData.appPrefix);
         window.location.replace("/");
     }
