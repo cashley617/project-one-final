@@ -25,6 +25,13 @@ function app_api_get_search_results(inputField) {
     // Set User Action
     appData.userActionLast = 'search';
 
+
+    app_render_content_header('Searching...');
+    $('.pagination').remove();
+    $('#app-content').empty();
+    $('#share-href').remove();
+    $('#app-content').append(`<div class="w-100 text-center"><img src="app/imgs/loading_icons/loading_spinner.gif"></div>`);
+
     // Data: Get request
     $.ajax({
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?q=${inputValue}-!1900,2018-!0,5-!0,10-!0-!Any-!Any-!Any-!gt100-!{downloadable}&t=ns&cl=78&st=adv&ob=Relevance&p=1&sa=and`,
@@ -211,10 +218,10 @@ function app_api_get_shared_link_info(itemID) {
 
 
 function app_list_remove_item(catIndex, catLibIndex) {
-    
+
     appProfile.favLibrary[catIndex].catLibrary.splice(catLibIndex, 1);
     console.log(appProfile.favLibrary[catIndex]);
-    
+
     appData.listNeedsUpdate = true;
     app_data_profile_store_local();
     app_render_favorites(catIndex);
@@ -450,7 +457,7 @@ function app_render_party_picker() {
         let catName = "Party Picker"
         let myHTML = `
         <div class="alert alert-info w-100" role="alert">
-            <P><i class="fas fa-exclamation-circle">&nbsp;</i>Oops! <b>${catName}</b> list is empty!</p>
+            <P><i class="fas fa-exclamation-circle">&nbsp;</i>Oops! <b>${catName}</b> list is empty because you've not added any items to your favorites lists!</p>
         </div>
         `;
 
@@ -737,6 +744,7 @@ function app_render_search_results() {
     app_render_content_header("Search results");
 
     $('#app-content').empty();
+
     for (let i = 0; i < appData.searchLibrary.length; i++) {
 
         // Title truncate
