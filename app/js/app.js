@@ -18,6 +18,7 @@ const appData = {
     // Temporary data storage for profile creation
     tempProfileSelected: 0,
     tempCurrentPage: 0,
+    tempBingeTotal: 0,
 
     // Tracker user movement
     userActionLast: '',

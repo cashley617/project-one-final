@@ -92,13 +92,25 @@ function app_api_get_title_info(itemID, catNameIndex, catLibIndex) {
 
             appData.lastListLibrary.push(response.RESULT);
 
+            let hour = 0;
+            let min = 0;
+
             // Title truncate
+
+            let itemRuntime = response.RESULT.nfinfo.runtime;
             let itemTitle = response.RESULT.nfinfo.title;
             if (itemTitle.length > 22) {
                 itemTitle = itemTitle.slice(0, 22) + "...";
             }
 
-            let itemRuntime = response.RESULT.nfinfo.runtime;
+
+            if (itemRuntime === 'na') { itemRuntime = '1h' }
+            hour = parseInt(itemRuntime.substring(0, itemRuntime.indexOf('h')));
+            min =  parseInt(itemRuntime.substring(itemRuntime.indexOf('h')+1, itemRuntime.indexOf('m')));
+            min += hour*60;
+            
+            appData.tempBingeTotal += min;
+
             let myHTML = `
                     <div class="card app-content-item">
                         <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
@@ -119,6 +131,8 @@ function app_api_get_title_info(itemID, catNameIndex, catLibIndex) {
                 </div>`;
 
             $('#app-content').append(myHTML);
+            $('#binge-time').html(`<h1>Binge Hours: ${Math.round(appData.tempBingeTotal/60)}</h1>`);
+
         }
     });
 }
@@ -170,6 +184,7 @@ function app_api_get_party_picker_details(itemID) {
                 </div>`;
 
             $('#app-content').append(myHTML);
+
 
         }
     });
@@ -415,6 +430,7 @@ function app_data_item_add_to_binge() {
     // Store to local storage
     app_data_profile_store_local();
 }
+
 function copy_shared_link() {
 
     let temp = $("<input>");
@@ -790,16 +806,21 @@ function app_render_binge() {
     // Clear original content
     $('#app-content').empty();
 
+    let bingeHTML = `
+        <div class="text-center" id="binge-time">
+            <h1>Binge Hours: ${appData.tempBingeTotal}</h1>
+        </div>`;
+
+    $('#app-content').before(bingeHTML);
+
 
     // Display items from list if there are any
-    if (appProfile.bingeLibrary > 0) {
+    if (appProfile.bingeLibrary.length > 0) {
 
         appProfile.bingeLibrary.forEach(function (data, index) {
             app_api_get_title_info(data);
         });
     }
-
-    console.log(appProfile.bingeLibrary)
 
     // Display No items
     if (appProfile.bingeLibrary.length === 0) {
