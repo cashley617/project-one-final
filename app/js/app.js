@@ -52,7 +52,7 @@ let appProfile = {
     profileName: 'Visitor',
     profileIcon: '0',
 
-    // Movie Item Librares
+    // Movie Item Library
     bingeLibrary: [],
 
     // Favorites

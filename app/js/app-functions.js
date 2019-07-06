@@ -71,8 +71,9 @@ function app_api_get_new_releases() {
     });
 }
 
+
 // API: Single Title Info
-function app_api_get_title_info(itemID) {
+function app_api_get_title_info(itemID, catNameIndex, catLibIndex) {
     $.ajax({
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
         headers: {
@@ -104,7 +105,7 @@ function app_api_get_title_info(itemID) {
                                     <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
                                 </div>
                                 <div class="d-flex align-items-center">
-                                    <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
+                                    <p><a href="#" onclick="app_list_remove_item(${catNameIndex},${catLibIndex})"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
                             </div>
                         </div>
                     </div>
@@ -117,6 +118,12 @@ function app_api_get_title_info(itemID) {
 
 // API: Single Title Info
 function app_api_get_party_picker_details(itemID) {
+
+    app_render_content_header('Random Selection');
+    $('.pagination').remove();
+    $('#app-content').empty();
+    $('#share-href').remove();
+    $('#app-content').append(`<div class="w-100 text-center"><img src="app/imgs/loading_icons/loading_spinner.gif"></div>`);
     $.ajax({
         url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
         headers: {
@@ -126,7 +133,7 @@ function app_api_get_party_picker_details(itemID) {
 
         success: function (response) {
 
-            app_render_content_header('Random Selection');
+            console.log(response);
 
             $('.pagination').remove();
             $('#app-content').empty();
@@ -142,18 +149,15 @@ function app_api_get_party_picker_details(itemID) {
             let myHTML = `
                     <div class="card app-content-item">
                         <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
-                        <div class="card-body app-content-item-body">
+                        <div class="card-body app-content-item-body text-center">
                             <div>
                                 <p>${itemTitle}</p>
                             </div>
 
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-center">
                                 <div>
                                     <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
-                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -206,8 +210,15 @@ function app_api_get_shared_link_info(itemID) {
 }
 
 
-function app_list_remove_item(itemIndex) {
-    // Remove indexItem from array
+function app_list_remove_item(catIndex, catLibIndex) {
+    
+    appProfile.favLibrary[catIndex].catLibrary.splice(catLibIndex, 1);
+    console.log(appProfile.favLibrary[catIndex]);
+    
+    appData.listNeedsUpdate = true;
+    app_data_profile_store_local();
+    app_render_favorites(catIndex);
+
 }
 
 // Initialize App: First run
@@ -384,6 +395,19 @@ function app_data_item_add_to_list() {
     appData.listNeedsUpdate = true;
 }
 
+// Add item to app binge
+function app_data_item_add_to_binge() {
+
+    // Get input from selected list
+    let inputValue = $('#list-choice').val();
+    let movieID = appData.itemModalStorage.netflixid;
+
+    // Add to list library
+    appProfile.bingeLibrary.push(movieID);
+
+    // Store to local storage
+    app_data_profile_store_local();
+}
 function copy_shared_link() {
 
     let temp = $("<input>");
@@ -418,6 +442,21 @@ function app_render_party_picker() {
         let randomItemIndex = Math.floor(Math.random() * Math.floor(everyItemArray.length));
         app_api_get_party_picker_details(everyItemArray[randomItemIndex]);
     }
+
+    if (everyItemArray.length === 0) {
+
+        $('#app-content').empty();
+        $('.pagination').remove();
+        let catName = "Party Picker"
+        let myHTML = `
+        <div class="alert alert-info w-100" role="alert">
+            <P><i class="fas fa-exclamation-circle">&nbsp;</i>Oops! <b>${catName}</b> list is empty!</p>
+        </div>
+        `;
+
+        $('#app-content').append(myHTML);
+    }
+
 }
 
 // Render favorites list, cached. (NO API PULL)
@@ -530,7 +569,7 @@ function app_render_modal_list_add() {
                     <p>Binge Tracker</p>
                 </div>
                 <div>
-                    <button id="btn-submit-profile" type="button" class="input-btn modal-input-btn">Add</button>
+                    <button id="btn-add-to-binge" type="button" class="input-btn modal-input-btn">Add</button>
                 </div>
             </div>
             <div class="modal-content-cell">
@@ -556,6 +595,13 @@ function app_render_modal_list_add() {
         }
     );
 
+    // Binge Tracker
+    $('#btn-add-to-binge').click(function () {
+        app_data_item_add_to_binge();
+        $.modal.close();
+    });
+
+    // Favorites Lists
     $('#btn-submit-add-to-list').click(function () {
         app_data_item_add_to_list();
         $.modal.close();
@@ -607,9 +653,11 @@ function app_render_modal_share_link(listIndex) {
 // Render New Releases
 function app_render_new_releases(page) {
 
-
     // Remove Share Button
     $('#share-href').remove();
+
+    app_render_content_header('New Releases');
+
 
     // Add pagination to list
     switch (page) {
@@ -652,6 +700,11 @@ function app_render_new_releases(page) {
 
         let itemImage = appData.newReleaseLibrary[i].image;
         let itemRuntime = appData.newReleaseLibrary[i].runtime;
+        let itemType = appData.newReleaseLibrary[i].type;
+        if (itemType === 'series') {
+            itemRuntime = 'Series';
+        }
+
         let myHTML = `
         <div class="card app-content-item">
             <img class="card-img-top loading" src="${itemImage}" alt="Card image cap">
@@ -716,6 +769,41 @@ function app_render_search_results() {
     }
 }
 
+// Render Favorites
+function app_render_binge() {
+
+
+    // Update section header
+    app_render_content_header("Binge");
+
+    // Remove pagination
+    $('.pagination').remove();
+
+    // Clear original content
+    $('#app-content').empty();
+
+
+    // Display items from list if there are any
+    if (appProfile.bingeLibrary > 0) {
+
+        appProfile.bingeLibrary.forEach(function (data, index) {
+            app_api_get_title_info(data);
+        });
+    }
+
+    console.log(appProfile.bingeLibrary)
+
+    // Display No items
+    if (appProfile.bingeLibrary.length === 0) {
+
+        let catName = "Binge Tracker"
+        let myHTML = `
+            <div class="alert alert-info w-100" role="alert">
+                <P><i class="fas fa-exclamation-circle">&nbsp;</i>Oops! <b>${catName}</b> list is empty!</p>
+            </div>`;
+        $('#app-content').append(myHTML);
+    }
+}
 
 // Render Favorites
 function app_render_favorites(listIndex) {
@@ -742,7 +830,7 @@ function app_render_favorites(listIndex) {
         // Check if list needs update
         if (appData.listNeedsUpdate) {
             appProfile.favLibrary[listIndex].catLibrary.forEach(function (data, index) {
-                app_api_get_title_info(data);
+                app_api_get_title_info(data, listIndex, index);
             });
             appData.listNeedsUpdate = false;
         } else {
