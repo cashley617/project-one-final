@@ -449,6 +449,8 @@ function copy_shared_link() {
 // Render favorites list, cached. (NO API PULL)
 function app_render_party_picker() {
 
+    $('#binge-time').remove();
+
     let everyItemArray = [];
     // Put every ID into a single array
 
@@ -678,6 +680,7 @@ function app_render_new_releases(page) {
 
     // Remove Share Button
     $('#share-href').remove();
+    $('#binge-time').remove();
 
     app_render_content_header('New Releases');
 
@@ -845,6 +848,9 @@ function app_render_favorites(listIndex) {
 
     // Clear original content
     $('#app-content').empty();
+
+    $('#binge-time').remove();
+
 
 
     // Display items from list if there are any
