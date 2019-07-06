@@ -53,7 +53,6 @@ let appProfile = {
     profileIcon: '0',
 
     // Movie Item Librares
-    partyLibrary: [],
     bingeLibrary: [],
 
     // Favorites
@@ -80,6 +79,11 @@ const db = firebase.firestore();
 
 // Document Ready
 $(document).ready(function () {
+
+    if (urlParamCheck === 'FRESHSTART') {
+        localStorage.removeItem(appData.appPrefix);
+        window.location.replace("/");
+    }
 
     // Initialize core app
     app_initialize();

@@ -115,6 +115,55 @@ function app_api_get_title_info(itemID) {
     });
 }
 
+// API: Single Title Info
+function app_api_get_party_picker_details(itemID) {
+    $.ajax({
+        url: `https://unogs-unogs-v1.p.rapidapi.com/aaapi.cgi?t=loadvideo&q=${itemID}`,
+        headers: {
+            'X-RapidAPI-Host': 'unogs-unogs-v1.p.rapidapi.com',
+            'X-RapidAPI-Key': appData.zalpha.join('')
+        },
+
+        success: function (response) {
+
+            app_render_content_header('Random Selection');
+
+            $('.pagination').remove();
+            $('#app-content').empty();
+            appData.lastListLibrary.push(response.RESULT);
+
+            // Title truncate
+            let itemTitle = response.RESULT.nfinfo.title;
+            if (itemTitle.length > 22) {
+                itemTitle = itemTitle.slice(0, 22) + "...";
+            }
+
+            let itemRuntime = response.RESULT.nfinfo.runtime;
+            let myHTML = `
+                    <div class="card app-content-item">
+                        <img class="card-img-top loading" src="${response.RESULT.nfinfo.image1}" alt="Card image cap">
+                        <div class="card-body app-content-item-body">
+                            <div>
+                                <p>${itemTitle}</p>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p><i class="fas fa-clock">&nbsp;</i>${itemRuntime}</p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <p><a href="#" onclick="app_list_remove_item()"><i class="fas fa-minus-circle btn-add-fav"></i></a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            $('#app-content').append(myHTML);
+
+        }
+    });
+}
+
 // API: Shared Link Info
 function app_api_get_shared_link_info(itemID) {
     $.ajax({
@@ -155,6 +204,8 @@ function app_api_get_shared_link_info(itemID) {
         }
     });
 }
+
+
 function app_list_remove_item(itemIndex) {
     // Remove indexItem from array
 }
@@ -346,6 +397,29 @@ function copy_shared_link() {
 
 // ------ Render Functions ------ //
 
+
+// Render Party Picker
+// Render favorites list, cached. (NO API PULL)
+function app_render_party_picker() {
+
+    let everyItemArray = [];
+    // Put every ID into a single array
+
+    for (let i = 0; i < appProfile.favLibrary.length; i++) {
+        for (let j = 0; j < appProfile.favLibrary[i].catLibrary.length; j++) {
+            everyItemArray.push(appProfile.favLibrary[i].catLibrary[j]);
+        }
+    }
+
+    // Render item
+    if (everyItemArray.length > 0) {
+
+        console.log('t');
+        let randomItemIndex = Math.floor(Math.random() * Math.floor(everyItemArray.length));
+        app_api_get_party_picker_details(everyItemArray[randomItemIndex]);
+    }
+}
+
 // Render favorites list, cached. (NO API PULL)
 function app_render_list_cached() {
 
@@ -503,7 +577,7 @@ function app_render_modal_share_link(listIndex) {
     });
 
     // Setup Url
-    let shareURL = `https://${window.location.hostname}/${listID}`;
+    let shareURL = `https://${window.location.hostname}/?${listID}`;
     let myHTML = `
         <div class="app-modal text-light h-auto" id="modal-share-link">
             <h4 class="text-center">Share this address</h4>
@@ -533,6 +607,9 @@ function app_render_modal_share_link(listIndex) {
 // Render New Releases
 function app_render_new_releases(page) {
 
+
+    // Remove Share Button
+    $('#share-href').remove();
 
     // Add pagination to list
     switch (page) {
@@ -642,6 +719,7 @@ function app_render_search_results() {
 
 // Render Favorites
 function app_render_favorites(listIndex) {
+
 
     // Update section header
     app_render_content_header("Favorites");
@@ -822,14 +900,3 @@ function app_modal_rebind_listeners() {
 function math_clamp(val, min, max) {
     return Math.min(Math.max(min, val), max);
 }
-
-// ---- DEBUG ---- //
-
-function app_debug_clear_data() {
-
-    event.preventDefault();
-    localStorage.removeItem(appData.appPrefix);
-    location.reload();
-}
-
-
